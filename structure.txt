@@ -1,0 +1,1 @@
+coin = timestamp + Q + seed + Q + amount
