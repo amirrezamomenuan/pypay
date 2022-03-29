@@ -34,7 +34,7 @@ class TRANSACTION:
         self.reverse_transaction_amount = 0.0
 
         self.has_transaction_fee = trxfee_validator(trxfee_amount)
-        transaction_amount_validator(amount)
+        # transaction_amount_validator(amount)
         incoins_validator(incoins)
 
 
@@ -48,6 +48,7 @@ class TRANSACTION:
             coin = coin_generator.COIN(coin_generator.COIN_SIZE_48)
             cast_data = coin.cast_coin(incoin_list, amount)
             coin = cast_data[0]
+            print(cast_data)
             self.reverse_transaction_amount = cast_data[1] - self.trxfee_amount
 
         else:
@@ -73,6 +74,7 @@ class TRANSACTION:
         
 
     def __construct_signable_hashed_data(self) -> str:
+        self.__cast_outcoins() ##############################################################################################################
         signable_data = OrderedDict()
         signable_data['incoins'] = self.incoins
         signable_data['outcoins'] = self.outcoins
@@ -100,7 +102,7 @@ class TRANSACTION:
         transaction['metadata'] = generate_metadata(trx_type)
         transaction['incoins'] = self.incoins
         transaction['outcoins'] = self.outcoins
-        transaction['signature'] = self.siganture
+        transaction['signature'] = self.signature
         transaction['sender_pubkey'] = self.pubkey
 
         setattr(self, "forged_transaction", transaction)

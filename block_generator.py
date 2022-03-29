@@ -4,9 +4,14 @@ from random import shuffle
 from hashlib import sha256
 from collections import OrderedDict
 
-from block_core import generate_selftrx_transaction, generate_trxfee_transaction
+# from block_core import generate_selftrx_transaction, generate_trxfee_transaction
+# the line above caused a circiular import error so it was replaced with the next three lines
 
-EMPTY_STR_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+import block_core
+# generate_selftrx_transaction = block_core.generate_selftrx_transaction
+# generate_trxfee_transaction = block_core.generate_trxfee_transaction
+
+EMPTY_STR_HASH = "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
 TRX_LIST_LIMIT = 10
 
 
@@ -79,8 +84,8 @@ class BLOCK:
 
     def __add_mining_reward(self):
         # check the trxfee protocol later
-        self_trx = generate_selftrx_transaction()
-        trxfee = generate_trxfee_transaction(self.trxs)
+        self_trx = block_core.generate_selftrx_transaction()
+        trxfee = block_core.generate_trxfee_transaction(self.trxs)
 
         self.__add_trx_to_trxs(self_trx)
         if trxfee is not None:

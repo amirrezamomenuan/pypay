@@ -1,7 +1,7 @@
 import json
 from collections import OrderedDict
 
-import Exeptions
+import Exceptions
 
 class TRX_TYPES:
     trx = 'trx'
@@ -14,7 +14,7 @@ LAST_BLOCK_INDEX = 152415 ########################################## get_last_bl
 
 def check_coins_count(validated_coins_count:int , coins_count:int , pubkey:str):
     if validated_coins_count != len(coins_count):
-        raise Exeptions.CoinException(f"coin(s) does not belong to the pubkey of : {pubkey}")
+        raise Exceptions.CoinException(f"coin(s) does not belong to the pubkey of : {pubkey}")
 
 
 def check_incoins(transaction: dict, coins_list: list, block_id: int):
@@ -24,7 +24,7 @@ def check_incoins(transaction: dict, coins_list: list, block_id: int):
         if coin in incoins:
             transaction_id = transaction.get("metadata").get("id")
             error_message = f"coin is already consumed in transaction with id : {transaction_id} on block : {block_id}"
-            raise Exeptions.DoubleSpendError(error_message)
+            raise Exceptions.DoubleSpendError(error_message)
 
 
 def check_trxfee_incoins(transaction: dict, coins_list: list):
@@ -33,7 +33,7 @@ def check_trxfee_incoins(transaction: dict, coins_list: list):
         if coin in transaction_incoins:
             transaction_id = transaction.get("metadata").get("id")
             error_message = f"coin is already consumed in transaction with id : {transaction_id} as the transaction fee"
-            raise Exeptions.DoubleSpendError(error_message)
+            raise Exceptions.DoubleSpendError(error_message)
 
 
 def check_outcoins(transaction: dict, coins_list: list, pubkey):

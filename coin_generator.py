@@ -1,6 +1,6 @@
 from random import choice, random
 import time
-import Exeptions
+import Exceptions
 
 
 ALPHANUMERIC_CHOICES = "abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPRSTUVWXYZ0123456789" # "Q" cannot be used in coin seed since its a seperation chatacter
@@ -17,7 +17,7 @@ class COIN:
     
     def generate_coin(self, amount:float = 1.0):
         if self.is_generated == True:
-            raise Exeptions.CoinException("coin is already generated use .get_coin to get coin")
+            raise Exceptions.CoinException("coin is already generated use .get_coin to get coin")
 
         time_stamp = str(time.time())
         amount = str(amount)
@@ -29,7 +29,7 @@ class COIN:
 
     def get_coin(self):
         if self.is_generated == False:
-            raise Exeptions.CoinException("coin is not generated")
+            raise Exceptions.CoinException("coin is not generated")
         
         return self.coin
 
@@ -59,8 +59,8 @@ class COIN:
             coin_amount = coin[2]
             tobe_casted_coin_amount += float(coin_amount)
 
-        self.generate_coin(tobe_casted_coin_amount)
-        if tobe_casted_coin_amount > amount:
-            self.genreate_reve
+        self.generate_coin(amount= amount)
+        # if tobe_casted_coin_amount > amount:
+        #     self.generate_coin(amount= amount)
         # next line returns the coin and the rest of coins amount, including reverse_amount and trxfee_amount
-        return self.get_coin(), amount - tobe_casted_coin_amount # maybe this sould return a tuple consisting two coins instead of one
+        return self.get_coin(), tobe_casted_coin_amount - amount # maybe this sould return a tuple consisting two coins instead of one

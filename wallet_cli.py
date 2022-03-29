@@ -7,9 +7,9 @@ from hashlib import sha512
 import transaction_core
 
 
-KEYPAIR_FILE_PATH = './wallet'
+KEYPAIR_FILE_PATH = '.'
 KEYPAIR_FILE_NAME = 'keypair.json'
-COINS = "coins"
+COINS_FILE_NAME = "coins.json"
 BITS_SIZE = 1024
         
 class wallet:
@@ -46,7 +46,7 @@ class wallet:
         path_to_json_file = file_path + '/' + file_name
         
         with open(path_to_json_file , "w") as writer:
-            json.dump(dict_data, writer)
+            json.dump(dict_data, writer, indent=4)
     
 
     def __load_parameters_from_file(self, file_path: str, file_name: str):
@@ -61,6 +61,7 @@ class wallet:
     
 
     def __hash_transaction(self, hashable_transaction:str) -> int:
+        # this should be removed due to the transaction object method
         """
         hashes only the important parts of a transaction 
         including incoins
@@ -75,7 +76,8 @@ class wallet:
         signes hashed_transaction parts
         parts: are described in self.__hash_transaction()
         """
-        signature = pow(hashed_trx_data, self.__d, self.__n)
+        hashed_trx_data_as_integer = int.from_bytes(hashed_trx_data.encode(), byteorder='big')
+        signature = pow(hashed_trx_data_as_integer, self.__d, self.__n)
         return hex(signature)
     
     
@@ -90,7 +92,7 @@ class wallet:
 
     def __choose_best_coinset(self, amount:float, trxfee:float = 0) -> list: #may need to take it out of class
         total_amount = amount + trxfee
-        coins_dict = self.__load_coins_from_jsonfile(KEYPAIR_FILE_PATH, COINS)
+        coins_dict = self.__load_coins_from_jsonfile(KEYPAIR_FILE_PATH, COINS_FILE_NAME)
         choosen_coins = []
         max_value = 0
         for k,v in coins_dict.items():
@@ -125,6 +127,7 @@ class wallet:
             amount = amount,
             trxfee_amount = trxfee_amount,
         )
+        
 
         signable_data = transaction.get_hashed_signable_data()
 
@@ -146,5 +149,8 @@ def unsign_transaction_signature(signature:str, pubkey_as_keypair: str) -> str:
     """
 
     e, n = pubkey_as_keypair.split(",")
+    signature = int(signature)
+    n = int(n)
+    e = float(e)
     unsign = pow(signature, e, n)
     return hex(unsign)

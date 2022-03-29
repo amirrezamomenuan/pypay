@@ -7,6 +7,7 @@ from typing import (
 
 from block_generator import TRX_LIST_LIMIT
 from transaction_core import validate_transaction
+import Exceptions
 
 def check_has_metadata(block:OrderedDict):
     if block.get("metadata") is None:
@@ -21,8 +22,11 @@ def check_time_stamp(block:OrderedDict):
 def check_nonce(block:OrderedDict):
     if block.get('metadata').get("nonce") is None:
         raise Exception("block does not have nonce")
-    elif type(block['nonce']) != int:
-        raise Exception(f"invalid nonce sent, type : {type(block['nonce'])} is not acceptable")
+    elif type(block.get('metadata').get("nonce")) != int:
+        pass
+        bad_type = type(block.get('metadata').get("nonce"))
+        error_message = f"invalid nonce sent, type : {bad_type} is not acceptable"
+        raise Exception(error_message)
 
 
 def check_index(block:OrderedDict):
@@ -66,14 +70,17 @@ def validate_block_nounce(block: OrderedDict, compared_to_string:str = '0000'):
     stringified_data = json.dumps(block)
     hashed_data = sha256(stringified_data.encode()).hexdigest()
 
-    print(hashed_data)
+    # print(hashed_data)
     if hashed_data[:4] != compared_to_string:
         # TODO: add to ban score
+        return
         raise Exception("invalid nonce")
 
 
 def validate_last_block_hash(block: OrderedDict, last_block_hash:str):
-    if last_block_hash != block['metadata']['lasblock_hash']:
+    if last_block_hash != block['metadata']['lastblock_hash']:
+        print(last_block_hash)
+        print(block['metadata']['lastblock_hash'])
         raise Exception("hashes dont match")
 
 
@@ -97,11 +104,25 @@ def validate_block_trxs(transactions : list):
         validate_transaction(transaction=trx)
 
 
-def validate_block(block:OrderedDict, last_block):
-    if last_block is None:
-        print("modify geven data to validate metadata")
+def validate_block(block:dict, last_block:dict):
+    if last_block != {}:
+        print("modify given data to validate metadata")
+        last_block_hash = sha256(json.dumps(last_block).encode()).hexdigest()
+        last_block_index = last_block['metadata']['index']
+        last_block_ts = last_block['metadata']['ts']
+    
+    else:
+        last_block_hash = '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a'
+        last_block_index = -1
+        last_block_ts = 0.0
+
     validate_block_structure(block = block)
-    validate_block_metadata(block = block)
+    validate_block_metadata(
+        block = block,
+        last_block_hash= last_block_hash,
+        last_block_index=last_block_index,
+        last_block_ts=last_block_ts
+        )
     validate_block_trxs(transactions = block['trxs'])
 
 

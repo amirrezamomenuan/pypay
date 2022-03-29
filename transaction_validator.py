@@ -9,8 +9,8 @@ sys.path.append("..")
 
 import coin_validator
 import wallet_cli
+import Exceptions
 
-WALLET = wallet_cli.wallet
 
 coin_validator = coin_validator
 
@@ -22,20 +22,21 @@ MIN_TRX_AMOUNT = 0.1
 def get_hashed_signable_data(transaction:dict) -> str:
     
     signable_data = OrderedDict()
-    signable_data['incoins'] = transaction.incoins
-    signable_data['outcoins'] = transaction.outcoins
-    signable_data['pubkey'] = transaction.pubkey
+    signable_data['incoins'] = transaction.get('incoins')
+    signable_data['outcoins'] = transaction.get('outcoins')
+    signable_data['pubkey'] = transaction.get('pubkey')
 
     jsonified_signable_data = json.dumps(signable_data)
     return sha256(jsonified_signable_data.encode()).hexdigest()
 
 
 def unsign_signature(signature:str, pubkey_as_keypair:str) -> str:
-    wallet = WALLET(status="check")
-    return wallet.validate_transaction_signature(
-        signature = signature,
-        pubkey_as_keypair = pubkey_as_keypair
-        )
+    return wallet_cli.unsign_transaction_signature(signature=signature, pubkey_as_keypair= pubkey_as_keypair)
+    # wallet = WALLET(status="check")
+    # return wallet.validate_transaction_signature(
+    #     signature = signature,
+    #     pubkey_as_keypair = pubkey_as_keypair
+    #     )
 
 
 def trx_timestamp_validator(time_stamp:float) -> None:
@@ -60,7 +61,7 @@ def trxfee_amount_validator(trxfee_coin: str) -> None:
 
         if transaction fee is greater than 0 and lower than minimum trxfee amount this function wont raise any errors
     """
-    trxfee_amount = trxfee_coin.split("Q")[2]
+    trxfee_amount = float(trxfee_coin.split("Q")[2])
 
     if trxfee_amount == 0:
         return
@@ -76,7 +77,7 @@ def transaction_amount_validator(trx_coin: str) -> None:
     """
         this function checks if the transaction amount is in the proper range
     """
-    trx_amount = trx_coin.split("Q")[2]
+    trx_amount = float(trx_coin.split("Q")[2])
 
     if trx_amount > MAX_TRX_AMOUNT:
         raise Exception(f"maximum amount for transaction coin is : {MAX_TRX_AMOUNT}")
@@ -89,7 +90,7 @@ def trx_structure_validator(transaction:dict) -> None:
     trx_incoins = transaction.get("incoins")
     trx_outcoins = transaction.get("outcoins")
     trx_signature = transaction.get("signature")
-    trx_pubkey = transaction.get("pubkey")
+    trx_pubkey = transaction.get("sender_pubkey")
 
     if type(trx_metadata) not in (dict, OrderedDict):
         raise ValueError("metadata is not in a valid form")
@@ -105,7 +106,9 @@ def trx_structure_validator(transaction:dict) -> None:
         #in that case it will cause some serious problems
         raise ValueError("signature is not in a valid form")
     
-    elif type(trx_pubkey) is not str:
+    elif type(trx_pubkey) != str:
+        print(trx_pubkey)
+        print(type(trx_pubkey))
         raise ValueError("sender public key is in an invalid form")
 
 
@@ -140,6 +143,16 @@ def validate_input_trx_coins(transaction:OrderedDict) -> None:
     coin_validator.validate_coin(incoins_list, sender_pubkey)
 
 
+def trxfee_validator(fxg):
+    # passing due to import error in transaction generator
+    return True
+
+
+def incoins_validator(incoins):
+    # passing due to import error in transaction generator
+    pass
+
+
 def validate_transaction(transaction:OrderedDict):
     trx_structure_validator(transaction= transaction)
     trx_metadata_validator(transaction['metadata'])
@@ -150,14 +163,6 @@ def validate_transaction(transaction:OrderedDict):
 
 
 
-def trxfee_validator(fxg):
-    # passing due to import error in transaction generator
-    pass
-
-
-def incoins_validator():
-    # passing due to import error in transaction generator
-    pass
 
 
 
