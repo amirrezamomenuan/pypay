@@ -44,6 +44,7 @@ def new_block():
 @app.route("/new-transaction", methods = ["POST"])
 def new_transaction():
     recieved_transaction = request.get_json()
+    print(recieved_transaction)
     response_data = transaction_core.validate_transaction(recieved_transaction)
     # add transaction to mempool
     return jsonify(

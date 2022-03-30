@@ -26,7 +26,7 @@ def get_hashed_signable_data(transaction:dict) -> int:
     signable_data['outcoins'] = transaction.get('outcoins')
     signable_data['sender_pubkey'] = transaction.get('sender_pubkey')
 
-    jsonified_signable_data = json.dumps(signable_data, indent=4)
+    jsonified_signable_data = json.dumps(signable_data, indent=4, sort_keys=True)
     # print("\tfunction: get_hashed_signable_data\n", )
     print("\tjsonified_signable_data = \n",jsonified_signable_data)
     hexified_data = sha256(jsonified_signable_data.encode()).hexdigest()
@@ -132,13 +132,16 @@ def trx_signarue_validator(transaction:OrderedDict) -> None:
     pubkey_as_keypair = transaction.get("sender_pubkey")
     hashed_signable_data = get_hashed_signable_data(transaction)
     unsigned_hashed_data = unsign_signature(signature, pubkey_as_keypair)
-    print("\ttype of unsigned_hashed_data = ",type(unsigned_hashed_data))
-    print("\t type of hashed_signable_data = ",type(hashed_signable_data))
-    print("\ttunsigned_hashed_data = ",unsigned_hashed_data)
-    print("\thashed_signable_data = ",hashed_signable_data)
+    print("\tsignature is: ", signature, "\n")
+    print("\ttype of unsigned_hashed_data = ",type(unsigned_hashed_data), "\n")
+    print("\t type of hashed_signable_data = ",type(hashed_signable_data), "\n")
+    print("\tunsigned_hashed_data = ",unsigned_hashed_data, "\n")
+    print("\thashed_signable_data = ",hashed_signable_data, "\n")
+    print("\t pubkey as keypair is === ",pubkey_as_keypair, "\n")
 
     if unsigned_hashed_data != hashed_signable_data:
         raise ValueError("invalid signature")
+    print("the mother fucking signature validated finally")
     
 
 def validate_input_trx_coins(transaction:OrderedDict) -> None:

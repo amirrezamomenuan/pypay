@@ -81,10 +81,10 @@ class TRANSACTION:
         signable_data = OrderedDict()
         signable_data['incoins'] = self.incoins
         signable_data['outcoins'] = self.outcoins
-        signable_data['pubkey'] = self.pubkey
+        signable_data['sender_pubkey'] = self.pubkey
 
-        jsonified_signable_data = json.dumps(signable_data, indent =4)
-        # print(jsonified_signable_data)
+        jsonified_signable_data = json.dumps(signable_data, indent= 4, sort_keys= True)
+        print("jsonified_signable_transaction = ",jsonified_signable_data)
         # setattr(self, "has_signable_data", True)
         data = sha256(jsonified_signable_data.encode()).hexdigest()
         print("signable hashed data in hexdigest form" , data)
