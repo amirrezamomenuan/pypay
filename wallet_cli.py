@@ -78,7 +78,7 @@ class wallet:
         """
         hashed_trx_data_as_integer = int.from_bytes(hashed_trx_data.encode(), byteorder='big')
         signature = pow(hashed_trx_data_as_integer, self.__d, self.__n)
-        return hex(signature)
+        return signature
     
     
     def __load_coins_from_jsonfile(self, file_path:str, file_name:str) -> dict: #may need to take it out of class
@@ -151,6 +151,7 @@ def unsign_transaction_signature(signature:str, pubkey_as_keypair: str) -> str:
     e, n = pubkey_as_keypair.split(",")
     signature = int(signature)
     n = int(n)
-    e = float(e)
+    e = int(e)
     unsign = pow(signature, e, n)
-    return hex(unsign)
+    print(unsign)
+    return unsign

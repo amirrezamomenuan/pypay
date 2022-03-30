@@ -19,15 +19,19 @@ MAX_TRX_AMOUNT = 100
 MIN_TRX_AMOUNT = 0.1
 
 
-def get_hashed_signable_data(transaction:dict) -> str:
+def get_hashed_signable_data(transaction:dict) -> int:
     
     signable_data = OrderedDict()
     signable_data['incoins'] = transaction.get('incoins')
     signable_data['outcoins'] = transaction.get('outcoins')
-    signable_data['pubkey'] = transaction.get('pubkey')
+    signable_data['sender_pubkey'] = transaction.get('sender_pubkey')
 
-    jsonified_signable_data = json.dumps(signable_data)
-    return sha256(jsonified_signable_data.encode()).hexdigest()
+    jsonified_signable_data = json.dumps(signable_data, indent=4)
+    print("\tfunction: get_hashed_signable_data\n")
+    print("\tjsonified_signable_data = \n",jsonified_signable_data)
+    hexified_data = sha256(jsonified_signable_data.encode()).hexdigest()
+    print("hexified data is : ", hexified_data, "\n\n")
+    return int(hexified_data, 16)
 
 
 def unsign_signature(signature:str, pubkey_as_keypair:str) -> str:
@@ -101,7 +105,7 @@ def trx_structure_validator(transaction:dict) -> None:
     elif type(trx_outcoins) is not dict:
         raise ValueError("outcoins is not in a valid form")
 
-    elif type(trx_signature) is not str:
+    elif type(trx_signature) is not int:
         # it might be a byte string 
         #in that case it will cause some serious problems
         raise ValueError("signature is not in a valid form")
@@ -127,7 +131,10 @@ def trx_signarue_validator(transaction:OrderedDict) -> None:
     pubkey_as_keypair = transaction.get("sender_pubkey")
     hashed_signable_data = get_hashed_signable_data(transaction)
     unsigned_hashed_data = unsign_signature(signature, pubkey_as_keypair)
-
+    print(type(unsigned_hashed_data))
+    print(type(hashed_signable_data))
+    print(unsigned_hashed_data)
+    print(hashed_signable_data)
     if unsigned_hashed_data != hashed_signable_data:
         raise ValueError("invalid signature")
     
