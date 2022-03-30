@@ -73,17 +73,22 @@ class TRANSACTION:
             self.outcoins['trxfee'] = self.__cast_coin(self, amount=self.trxfee_amount, pubkey="miner")
         
 
-    def __construct_signable_hashed_data(self) -> str:
+    def __construct_signable_hashed_data(self) -> int:
+        """
+        returns a hashed signable data that does not require to be hashed any more
+        """
         self.__cast_outcoins() ##############################################################################################################
         signable_data = OrderedDict()
         signable_data['incoins'] = self.incoins
         signable_data['outcoins'] = self.outcoins
         signable_data['pubkey'] = self.pubkey
 
-        jsonified_signable_data = json.dumps(signable_data)
+        jsonified_signable_data = json.dumps(signable_data, indent =4)
         # print(jsonified_signable_data)
         # setattr(self, "has_signable_data", True)
-        return sha256(jsonified_signable_data.encode()).hexdigest()
+        data = sha256(jsonified_signable_data.encode()).hexdigest()
+        print("signable hashed data in hexdigest form" , data)
+        return int(data, 16)
 
 
     def get_hashed_signable_data(self):

@@ -76,7 +76,11 @@ class wallet:
         signes hashed_transaction parts
         parts: are described in self.__hash_transaction()
         """
-        hashed_trx_data_as_integer = int.from_bytes(hashed_trx_data.encode(), byteorder='big')
+        if type(hashed_trx_data) != int:
+            hashed_trx_data_as_integer = int(hashed_trx_data, 16)
+        else:
+            hashed_trx_data_as_integer = hashed_trx_data
+        print("\tdata that is going to be signed:\n, \t", hashed_trx_data_as_integer)
         signature = pow(hashed_trx_data_as_integer, self.__d, self.__n)
         return signature
     
@@ -129,9 +133,9 @@ class wallet:
         )
         
 
-        signable_data = transaction.get_hashed_signable_data()
+        hashed_signable_data = transaction.get_hashed_signable_data()
 
-        signature = self.__sign_transaction(signable_data)
+        signature = self.__sign_transaction(hashed_signable_data)
         transaction.set_signature(signature)
         transaction.cast_transaction(trx_type = trx_type)
         return transaction.get_transaction()
@@ -147,11 +151,11 @@ def unsign_transaction_signature(signature:str, pubkey_as_keypair: str) -> str:
 
     returns a string wich is equal to unsigned data
     """
-
+    print("public key as keypair is :", pubkey_as_keypair)
     e, n = pubkey_as_keypair.split(",")
     signature = int(signature)
     n = int(n)
     e = int(e)
     unsign = pow(signature, e, n)
-    print(unsign)
+    print("unsigned value is : ",unsign)
     return unsign

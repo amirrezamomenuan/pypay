@@ -8,6 +8,7 @@ amount = 5
 trxfee_amount = 0.001
 trx_type = 'trx'
 import wallet_cli
+import transaction_validator 
 
 wallet = wallet_cli.wallet()
 transaction = wallet.create_transaction(
@@ -17,4 +18,5 @@ transaction = wallet.create_transaction(
     trx_type= trx_type
 )
 
+# transaction_validator.validate_transaction(transaction)
 print(json.dumps(transaction, indent=4))
