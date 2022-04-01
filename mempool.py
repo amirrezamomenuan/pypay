@@ -3,7 +3,7 @@ class mempool:
         self.__ledger = initial_transactions
     
 
-    def add_transactions(self, transaction):
+    def add_transaction(self, transaction):
         self.__ledger.append(transaction)
     
 
@@ -30,6 +30,7 @@ class mempool:
 
     def get_transactions_list_by_given_key(self,given_key:str = 'trxfee', list_size : int = 10, reverse : bool = False):
         temp_ledger = []
+        
         if given_key == "trxfee":
             for trx in self.__ledger:
                 try:

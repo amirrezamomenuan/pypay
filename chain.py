@@ -23,3 +23,11 @@ class chain:
             return self.__chain[-1]
         else:
             return "genesis block"
+    
+    @property
+    def last_block_index(self) -> int:
+        if self.last_block != "genesis block":
+            return self.last_block.get("metadata").get('last_block_index')
+        
+        else:
+            return -1

@@ -2,14 +2,16 @@ import json
 from collections import OrderedDict
 
 import Exceptions
+import pypayd
+import mempool
 
 class TRX_TYPES:
     trx = 'trx'
     selftrx = 'selftrx'
     trxfee = 'trxfee'
 
-blocks = {}  ################################################
-LAST_BLOCK_INDEX = 152415 ########################################## get_last_block_index()
+blocks = pypayd.chain.get_full_chain() ################################################
+LAST_BLOCK_INDEX = pypayd.chain.last_block_index ########################################## get_last_block_index()
 
 
 def check_coins_count(validated_coins_count:int , coins_count:int , pubkey:str):
@@ -84,6 +86,7 @@ def validate_coin(coins:list, sender_pub_key:str) -> bool:
     """
     last_block_index = LAST_BLOCK_INDEX
     validated_coins_count = 0
+    
 
     while last_block_index >= 0:
         block = blocks[last_block_index]
@@ -105,4 +108,5 @@ def validate_coin(coins:list, sender_pub_key:str) -> bool:
                 validated_coins_count += check_trxfee_outcoins(trx, coins, sender_pub_key)
 
         last_block_index -= 1
+    
         

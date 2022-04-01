@@ -6,7 +6,7 @@ from typing import (
 )
 
 from block_generator import TRX_LIST_LIMIT
-from transaction_core import validate_transaction
+import transaction_core
 import Exceptions
 
 def check_has_metadata(block:OrderedDict):
@@ -101,7 +101,7 @@ def validate_block_metadata(block:OrderedDict, last_block_ts:float, last_block_i
 
 def validate_block_trxs(transactions : list):
     for trx in transactions:
-        validate_transaction(transaction=trx)
+        transaction_core.validate_transaction(transaction=trx)
 
 
 def validate_block(block:dict, last_block:dict):
