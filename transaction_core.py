@@ -32,6 +32,12 @@ def validate_transaction(transaction) -> bool:
     except Exceptions.InvalidBlock:
         return "this block is invalid", 400
     
+    except Exceptions.CoinException:
+        return "there is something wrong with the coins", 400
+    except Exceptions.DoubleSpendError:
+        return "coin(s) in incoins are spent before make sure to update incoins file", 400
+    except ValueError as ve:
+        return f"you gave an invalid value {ve}", 400
     else:
         pass
     # do something about it

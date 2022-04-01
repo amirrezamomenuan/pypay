@@ -23,7 +23,7 @@ class BlockChain:
 
     @property
     def mempool(self):
-        return self.__mempool
+        return self.__mempool.get_all_transactions()
     
     @property
     def relative_nodes(self):

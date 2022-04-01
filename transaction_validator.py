@@ -36,11 +36,6 @@ def get_hashed_signable_data(transaction:dict) -> int:
 
 def unsign_signature(signature:int, pubkey_as_keypair:str) -> str:
     return wallet_cli.unsign_transaction_signature(signature=signature, pubkey_as_keypair= pubkey_as_keypair)
-    # wallet = WALLET(status="check")
-    # return wallet.validate_transaction_signature(
-    #     signature = signature,
-    #     pubkey_as_keypair = pubkey_as_keypair
-    #     )
 
 
 def trx_timestamp_validator(time_stamp:float) -> None:
@@ -71,10 +66,10 @@ def trxfee_amount_validator(trxfee_coin: str) -> None:
         return
 
     elif trxfee_amount < 0:
-        raise Exception("trxfee cannot be negative")
+        raise ValueError("trxfee cannot be negative")
 
     elif trxfee_amount < MIN_TRXFEE_AMOUNT:
-        raise Exception(f"minimum trxfee per transaction is : {MIN_TRXFEE_AMOUNT}")
+        raise ValueError(f"minimum trxfee per transaction is : {MIN_TRXFEE_AMOUNT}")
 
 
 def transaction_amount_validator(trx_coin: str) -> None:
@@ -84,9 +79,9 @@ def transaction_amount_validator(trx_coin: str) -> None:
     trx_amount = float(trx_coin.split("Q")[2])
 
     if trx_amount > MAX_TRX_AMOUNT:
-        raise Exception(f"maximum amount for transaction coin is : {MAX_TRX_AMOUNT}")
+        raise ValueError(f"maximum amount for transaction coin is : {MAX_TRX_AMOUNT}")
     elif trx_amount < MIN_TRX_AMOUNT:
-        raise Exception(f"minimum amount for transaction coin is : {MAX_TRX_AMOUNT}")
+        raise ValueError(f"minimum amount for transaction coin is : {MAX_TRX_AMOUNT}")
 
 
 def trx_structure_validator(transaction:dict) -> None:
@@ -172,41 +167,3 @@ def validate_transaction(transaction:OrderedDict):
     transaction_amount_validator(transaction['outcoins']['recipient']['coin'])
     trx_signarue_validator(transaction = transaction)
     validate_input_trx_coins(transaction = transaction)
-
-
-
-
-
-
-# test_data = {
-#     "metadata":{
-#         "ts" : 1646094542.123489402101,
-#         "id" : "681sd531ase8413e5fe484sfd3as4df5",
-#         "status" : "trx, selftrx, trxfee"
-#     },
-
-#     "incoins" : [
-#         "1646094757.444768QZpkg6KsUL0MaX8nedFb4IRfO3BGPTNwySrVmh7xqCt9HiAE5Q0.12349539360282247",
-#         "1646094757.4456499Qlp4A1h2xnaHUL3TwgmbBOCNVS0s8YvqFMK5RPdWkirXZutzGQ0.53437199581769",
-#         "1646094757.4466457QmP2UcsSVrufgwTaZLbnXG3OHz1RFtqx5iKl98EkDBNhYI6WdQ0.011841394046662623"
-#     ],
-#     "outcoins" : {
-#         "recipient" : {
-#             "pubkey" : "KtbIe8239fn4sfdP98MBEIcbelaif5n8c9a849rggoi8a",
-#             "coin" : "1646094933.6395645QF67d2OVC9nIMARbNTBiemShgtpLcYuxE3oPD4ZHXvazw5r1sQ0.3586473805978918"
-#         },
-#         "sender" : {
-#             "pubkey" : "MrfdP9goi8BEIa2cbel39gf5n8c9a849ri8aKtbIe8fn4",
-#             "coin" : None
-#         },
-#         "trxfee" : {
-#             "pubkey" : "miner",
-#             "coin" : "1646094933.6395645QTbZdDvUKYPeOrugC2MIXLhn1AkqlSB83HxGytwJz4oWVF9i0Q0.0000000444295502"   
-#         }
-#     },
-#     "signature" : "jFN839cNEi8q4AG50caJ9jkl4vMrf5f72Lvsi0a27N3niBE5VU2nin48150an8Mx",
-#     "sender_pubkey" : "MrfdP9goi8BEIa2cbel39gf5n8c9a849ri8aKtbIe8fn4"
-# }
-
-
-# validate_input_trx_coins(test_data)

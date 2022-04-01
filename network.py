@@ -64,7 +64,7 @@ def get_full_chain():
 
 @app.route("/get-mempool-transactions", methods = ['GET'])
 def get_mempool_transactions():
-    ledger = pypayd.deamon_node.mempool.get_all_transactions()
+    ledger = pypayd.deamon_node.mempool
     print(ledger)
     return jsonify(
         {"message" : ledger, "status" : 200}
