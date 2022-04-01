@@ -55,6 +55,7 @@ def new_transaction():
     return jsonify(
         {"message" : response_data[0], "status" : response_data[1]}
     )
+    # __________________ kind of done ____________________
 
 
 @app.route("/get-full-chain", methods = ['GET'])

@@ -38,7 +38,5 @@ def validate_transaction(transaction) -> bool:
         return "coin(s) in incoins are spent before make sure to update incoins file", 400
     except ValueError as ve:
         return f"you gave an invalid value {ve}", 400
-    else:
-        pass
-    # do something about it
-
+    except:
+        return "unexpected error occured", 400

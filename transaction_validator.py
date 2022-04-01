@@ -6,7 +6,6 @@ import sys
 
 sys.path.append("..")
 
-
 import coin_validator
 import wallet_cli
 import Exceptions

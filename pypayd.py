@@ -19,7 +19,7 @@ class BlockChain:
 
     @property
     def full_chain(self):
-        return self.__chain
+        return self.__chain.get_full_chain()
 
     @property
     def mempool(self):
