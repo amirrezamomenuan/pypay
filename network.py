@@ -31,18 +31,6 @@ def initial_boot_data():
     # __________________ kind of done ____________________
 
 
-@app.route("/new-block", methods = ["POST"])
-def new_block():
-    last_block = pypayd.deamon_node.get_last_block()
-    recieved_block = request.get_json()
-    response_data = block_core.handle_new_block(block = recieved_block, last_block=last_block)
-
-    return jsonify(
-        {"message" : response_data[0], "status" : response_data[1]}
-    )
-    # __________________ kind of done ____________________
-
-
 @app.route("/new-transaction", methods = ["POST"])
 def new_transaction():
     recieved_transaction = request.get_json()
@@ -51,6 +39,23 @@ def new_transaction():
 
     if response_data[1] == CORRECT_STATUS_CODE:
         pypayd.deamon_node.add_transaction_to_mempool(recieved_transaction)
+
+    return jsonify(
+        {"message" : response_data[0], "status" : response_data[1]}
+    )
+    # __________________ kind of done ____________________
+
+
+@app.route("/new-block", methods = ["POST"])
+def new_block():
+    last_block = pypayd.deamon_node.get_last_block()
+    recieved_block = request.get_json()
+    response_data = block_core.handle_new_block(block = recieved_block, last_block=last_block)
+    print("LAST BLOCK IS: ", last_block)
+    if response_data[1] == CORRECT_STATUS_CODE:
+        # add block to blockchain
+        print("added to ledger successfully")
+        pass
 
     return jsonify(
         {"message" : response_data[0], "status" : response_data[1]}

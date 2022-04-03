@@ -8,6 +8,7 @@ from collections import OrderedDict
 # the line above caused a circiular import error so it was replaced with the next three lines
 
 import block_core
+import Exceptions
 # generate_selftrx_transaction = block_core.generate_selftrx_transaction
 # generate_trxfee_transaction = block_core.generate_trxfee_transaction
 
@@ -20,6 +21,7 @@ class BLOCK:
         self.index = last_block_index + 1
         self.lastblock_hash = lastblock_hash
         self.trxs = []
+        self.can_have_trxfee_trx = False
     
     def _generate_metadata(self) -> None:
         setattr(self, 'metadata', OrderedDict())
@@ -91,22 +93,6 @@ class BLOCK:
         if trxfee is not None:
             self.__add_trx_to_trxs(trxfee)
     
-    def _mine_block(self, transactions_list:list, max_nonce_limit:int = 1000000000):
-        self._generate_metadata()
-        self._generate_trxs_list(transactions_list= transactions_list)
-        self.__add_mining_reward()
-
-        while  self.metadata['nonce'] < max_nonce_limit:
-            if self.__check_hash_is_acceptable(self.__hash_block()):
-                return self.hashable_data
-            
-            self.__update_hashable_block()
-        return None
-
-
-    def _shuffle_trxs(self):
-        shuffle(self.trxs)
-    
 
     def __check_self_trx_existance(self):
         if len(self.trxs) == 0:
@@ -117,15 +103,47 @@ class BLOCK:
                 if trx['metadata']['status'] == "selftrx":
                     return True
             except:
-                raise Exception("invalid trx structure in block_generator >> __check_self_trx_existence")
-        raise Exception("self transaction is not included in trxs")
+                raise Exceptions.SelfTrxDoesNotExist("invalid trx structure in block_generator >> __check_self_trx_existence")
+        raise Exceptions.SelfTrxDoesNotExist("self transaction is not included in trxs")
+    
+
+    def __check_trxfee_trx_existance(self):
+        if self.can_have_trxfee_trx:
+            for trx in self.trxs:
+                try:
+                    if trx['metadata']['status'] == "trxfee":
+                        return True
+                except:
+                    raise Exceptions.TrxfeeTrxDoesNotExist("invalid trx structure in block_generator >> __check_trxfee_trx_existance")
+
+            error_message = """this set of transactions includes transaction(s) 
+            that have considerable trxfees that are not contained in transactions list"""
+            raise Exceptions.TrxfeeTrxDoesNotExist(error_message)
+
+
+    def _mine_block(self, transactions_list:list, max_nonce_limit:int = 1000000000):
+        self.__check_self_trx_existance()
+        self.__check_trxfee_trx_existance()
+        self._generate_metadata()
+        self._generate_trxs_list(transactions_list= transactions_list)
+        self.__add_mining_reward()
+
+        while  self.metadata['nonce'] < max_nonce_limit:
+            if self.__check_hash_is_acceptable(self.__hash_block()):
+                return self.hashable_data
+            self.__update_hashable_block()
+        return None
+
+
+    def _shuffle_trxs(self):
+        shuffle(self.trxs)
 
 
 def mine(transactions_list:list, last_block_index:int = 0, lastblock_hash:str = EMPTY_STR_HASH):
     block = BLOCK(last_block_index = last_block_index, lastblock_hash= lastblock_hash)
+    # TODO: the next line(s) should contain a function that adds selftrx and trxfee trx to transactions list
     processed_transactions_list = transactions_list
     while True:
-        
         if block._mine_block(transactions_list= transactions_list) is not None:
             print("new block mined")
             return "tell every body"

@@ -23,20 +23,25 @@ def create_transaction(pubkey:str, recipient_pubkey:str, incoins:list, amount:fl
     return transaction
 
 
-def validate_transaction(transaction) -> bool:
+def validate_transaction(transaction, is_validating_block: bool = False) -> bool:
     try:
         # turn dict to ordereddict
-        transaction_validator.validate_transaction(transaction=transaction)
+        print("\t\t here we are in validate_transaction in transaction_core")
+        transaction_validator.validate_transaction(transaction=transaction, validating_block_transactions=is_validating_block)
+        print("transaction validated and added to mempool")
         return "transaction validated and added to mempool", 200
-    
     except Exceptions.InvalidBlock:
+        print("this block is invalid")
         return "this block is invalid", 400
-    
     except Exceptions.CoinException:
+        print("there is something wrong with the coins")
         return "there is something wrong with the coins", 400
     except Exceptions.DoubleSpendError:
+        print("coin(s) in incoins are spent before make sure to update incoins file")
         return "coin(s) in incoins are spent before make sure to update incoins file", 400
     except ValueError as ve:
+        print(f"you gave an invalid value {ve}")
         return f"you gave an invalid value {ve}", 400
-    except:
-        return "unexpected error occured", 400
+    except Exception as e:
+        print("this is an error", e)
+        raise Exception(f"{e}")

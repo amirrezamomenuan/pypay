@@ -130,13 +130,13 @@ def check_mempool_transaction_coins(coins:list, sender_pub_key:str) -> None:
         )
 
 
-def validate_coin(coins:list, sender_pub_key:str) -> bool:
+def validate_coin(coins:list, sender_pub_key:str, validating_block_transactions: bool = False) -> bool:
     """
     to solve double spending problem the only requirement is to check imcoins list
     so in this function we are ignoring outcoins
     """
-
-    check_mempool_transaction_coins(coins, sender_pub_key)
+    if not validating_block_transactions:
+        check_mempool_transaction_coins(coins, sender_pub_key)
 
     last_block_index = LAST_BLOCK_INDEX
     validated_coins_count = 0

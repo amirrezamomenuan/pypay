@@ -7,61 +7,30 @@
     },
     "trxs" : [
         {
-            "metadata":{
-                "ts" : 1646094542.123489402101,
-                "id" : "681sd531ase8413e5fe484sfd3as4df5",
-                "status" : "trx"
+            "metadata": {
+                "ts": 1648818389.471409,
+                "status": "trx"
             },
-        
-            "incoins" : [
-                "1646094757.444768QZpkg6KsUL0MaX8nedFb4IRfO3BGPTNwySrVmh7xqCt9HiAE5Q0.12349539360282247",
-                "1646094757.4456499Qlp4A1h2xnaHUL3TwgmbBOCNVS0s8YvqFMK5RPdWkirXZutzGQ0.53437199581769",
-                "1646094757.4466457QmP2UcsSVrufgwTaZLbnXG3OHz1RFtqx5iKl98EkDBNhYI6WdQ0.011841394046662623"
+            "incoins": [
+                "1646094757.4466457QmP2UcsSVrufgwTaZLbnXG3OHz1RFtqx5iKl98EkDBNhYI6WdQ0.75"
             ],
-            "outcoins" : {
-                "recipient" : {
-                    "pubkey" : "KtbIe8239fn4sfdP98MBEIcbelaif5n8c9a849rggoi8a",
-                    "coin" : "1646094933.6395645QF67d2OVC9nIMARbNTBiemShgtpLcYuxE3oPD4ZHXvazw5r1sQ0.3586473805978918"
+            "outcoins": {
+                "recipient": {
+                    "pubkey": "44546935152001363966336994115318905757253929535165058542390512753259362015709135447938822489762922897816314900802678280645195532490278730400211890505496161187330191639699053578875682877202312631626270135977532590297627311050878465544615999041238522547192514820047278595941435394281023621479436374614442433893,65537",
+                    "coin": "1648818389.4401634QpbIouaUEgEXNe7xtawecffzGE3lGBI9HauKaHcTZPXbG4sGqQ0.2"
                 },
-                "sender" : {
-                    "pubkey" : "MrfdP9goi8BEIa2cbel39gf5n8c9a849ri8aKtbIe8fn4",
-                    "coin" : null
+                "sender": {
+                    "pubkey": "65537,108239653508774210028774681886502876325954406269938175244138690332795442668567864007533433310569255328315739930245181981867595816023695942077408522338940943797126744084120228571896679384082904837750414757736075866288168978813907383179470943163033503256064022297584517331295982976564374260355048821685742044291",
+                    "coin": "1648818389.4401634Q9tZXahCcbmIgcMgduBbAaShlhNYe8MJAWiUaWasIbDZ9uihVQ0.55"
                 },
-                "trxfee" : {
-                    "coin" : "1646094933.6395645QTbZdDvUKYPeOrugC2MIXLhn1AkqlSB83HxGytwJz4oWVF9i0Q0.0000000444295502",
-                    "pubkey" : "miner"
+                "trxfee": {
+                    "pubkey": "miner",
+                    "coin": "1648818389.4401634QznspweXrsAzkUehGrIvGWpFY6GB4wFxTpcJ9dWPZVgxgGPYZQ0"
                 }
             },
-            "signature" : "jFN839cNEi8q4AG50caJ9jkl4vMrf5f72Lvsi0a27N3niBE5VU2nin48150an8Mx",
-            "sender_pubkey" : "MrfdP9goi8BEIa2cbel39gf5n8c9a849ri8aKtbIe8fn4"
-        },
-        {
-            "metadata":{
-                "ts" : 1646098421.123489402101,
-                "id" : "13e5fe4681sd531ase8484sfd3as4df5",
-                "status" : "selftrx"
-            },
-        
-            "incoins" : [
-                "1646094757.444768QZpkg6KsUL0MaX8nedFbfO3BGPTNwytwgmbBOCNSrVmh7xqCt9HiAE5WkQ18.12349539360282247"
-            ],
-            "outcoins" : {
-                "recipient" : {
-                    "pubkey" : "KtbIe8239fn4sfdP98MBEIcbelaif5n8c9a849rggoi8a",
-                    "coin" : "1646048413.6395645QF67d2OVC9nIMARbNTBiemShgazw5r1stpLcYuxE3oPD4ZHXvQ0.3586473805978918"
-                },
-                "sender" : {
-                    "pubkey" : "MrfdP9goi8BEIa2cbel39gf5n8c9a849ri8aKtbIe8fn4",
-                    "coin" : null
-                },
-                "trxfee" : {
-                    "coin" : "1646094933.6395645QTbZdDvUKYPeOrugC2MIXLhn1AkqlSB83HxGytwJz4oWVF9i0Q0.0000159024",
-                    "pubkey" : "miner"
-                }
-            },
-            "signature" : "jFN5VU2nin48150aaJ9jkl4vM839cNEi8q4AG50cvsi0a27N3niBErf5f72Ln8Mx",
-            "sender_pubkey" : "MrfdP9goi8BEIn8c9a849ri8aKtbIa2cbel39gf5e8fn4"
-        }  
+            "signature": 65877567643868900455908154308918618304468983109061545031158626867660466264779391512073738448581018247994363231174994346045154378367219382035157755693454068093832740500514349105249607746733763914098621925579355007865634741566325402629891158929615978495990897924744006027687907773626867772333223505270297024475,
+            "sender_pubkey": "65537,108239653508774210028774681886502876325954406269938175244138690332795442668567864007533433310569255328315739930245181981867595816023695942077408522338940943797126744084120228571896679384082904837750414757736075866288168978813907383179470943163033503256064022297584517331295982976564374260355048821685742044291"
+        }
     ]
 }
 

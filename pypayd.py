@@ -8,6 +8,8 @@ import mempool
 chain = chain.chain()
 mempool = mempool.mempool()
 
+MIN_TRXS_TO_MINE_BLOCK = 5
+
 
 
 class BlockChain:
@@ -31,13 +33,18 @@ class BlockChain:
     
     def get_last_block(self):
         try:
-            return self.__chain[-1]
+            return self.__chain.get_full_chain()[-1]
         except:
             return {}
     
     def add_transaction_to_mempool(self, transaction:dict):
         self.__mempool.add_transaction(transaction = transaction)
+        if len(self.__mempool.number_of_transactions) >= MIN_TRXS_TO_MINE_BLOCK:
+            print("start mining")
     
+    def add_block_to_chain(self, block):
+        self.__chain.append_new_block(block)
+        print(self.__chain.get_full_chain())
 
 
 deamon_node = BlockChain(

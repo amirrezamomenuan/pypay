@@ -19,5 +19,11 @@ class InvalidTransaction(Exception):
 class InvalidBlock(Exception):
     pass
 
+class SelfTrxDoesNotExist(Exception):
+    pass
+
+class TrxfeeTrxDoesNotExist(Exception):
+    pass
+
 class InvalidChain(Exception):
     pass

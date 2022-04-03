@@ -54,3 +54,7 @@ class mempool:
                 if remained_data_count == 0:
                     break
             return temp_ledger
+    
+    @property
+    def number_of_transactions(self):
+        return len(self.__ledger)

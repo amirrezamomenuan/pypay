@@ -126,19 +126,12 @@ def trx_signarue_validator(transaction:OrderedDict) -> None:
     pubkey_as_keypair = transaction.get("sender_pubkey")
     hashed_signable_data = get_hashed_signable_data(transaction)
     unsigned_hashed_data = unsign_signature(signature, pubkey_as_keypair)
-    print("\tsignature is: ", signature, "\n")
-    print("\ttype of unsigned_hashed_data = ",type(unsigned_hashed_data), "\n")
-    print("\t type of hashed_signable_data = ",type(hashed_signable_data), "\n")
-    print("\tunsigned_hashed_data = ",unsigned_hashed_data, "\n")
-    print("\thashed_signable_data = ",hashed_signable_data, "\n")
-    print("\t pubkey as keypair is === ",pubkey_as_keypair, "\n")
 
     if unsigned_hashed_data != hashed_signable_data:
         raise ValueError("invalid signature")
-    print("the mother fucking signature validated finally")
     
 
-def validate_input_trx_coins(transaction:OrderedDict) -> None:
+def validate_input_trx_coins(transaction:OrderedDict, validating_block_transactions:bool = False) -> None:
     """
     this function has to check if the signed coins actually belong to the address that signed it
     """
@@ -146,7 +139,7 @@ def validate_input_trx_coins(transaction:OrderedDict) -> None:
     sender_pubkey = transaction.get("sender_pubkey")
     print(incoins_list)
     print(sender_pubkey)
-    coin_validator.validate_coin(incoins_list, sender_pubkey)
+    coin_validator.validate_coin(incoins_list, sender_pubkey, validating_block_transactions)
 
 
 def trxfee_validator(fxg):
@@ -159,10 +152,12 @@ def incoins_validator(incoins):
     pass
 
 
-def validate_transaction(transaction:OrderedDict):
+def validate_transaction(transaction:OrderedDict, validating_block_transactions:bool = False):
+    print("\n\ttransaction validation started...\n")
     trx_structure_validator(transaction= transaction)
     trx_metadata_validator(transaction['metadata'])
     trxfee_amount_validator(transaction['outcoins']['trxfee']['coin'])
     transaction_amount_validator(transaction['outcoins']['recipient']['coin'])
     trx_signarue_validator(transaction = transaction)
-    validate_input_trx_coins(transaction = transaction)
+    validate_input_trx_coins(transaction = transaction, validating_block_transactions = validating_block_transactions)
+    print("\n\ttransaction validated successfully...")

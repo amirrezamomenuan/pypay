@@ -32,7 +32,8 @@ class TRANSACTION:
         self.trxfee_amount = trxfee_amount
         self.transaction_amount = amount
         self.reverse_transaction_amount = 0.0
-
+        
+        # the next three lines may not be required
         self.has_transaction_fee = trxfee_validator(trxfee_amount)
         # transaction_amount_validator(amount)
         incoins_validator(incoins)
@@ -118,9 +119,3 @@ class TRANSACTION:
             raise ValueError("TRANSACTION object has no attrubute forged_transaction, please make sure to call cast_transaction method")
         
         return self.forged_transaction
-
-
-# trx = TRANSACTION("rezaishere1378", "rezaisthere13780", incoins=['16551025.0215QthisisacoinQ15.000'], amount=15, trxfee_amount=0)
-# trx.cast_coin(amount = 14.5, pubkey = trx.pubkey, incoin_list= trx.incoins)
-# trx.__cast_outcoins()
-# print(trx.construct_signable_data())
