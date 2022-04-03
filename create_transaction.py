@@ -1,22 +1,46 @@
 import json
+import requests
 
-# recipient_pubkey:str,
-#  amount:float, trxfee_amount:float,
-#  trx_type:str = 'trx'
-recipient_pubkey = "44546935152001363966336994115318905757253929535165058542390512753259362015709135447938822489762922897816314900802678280645195532490278730400211890505496161187330191639699053578875682877202312631626270135977532590297627311050878465544615999041238522547192514820047278595941435394281023621479436374614442433893,65537"
-amount = 0.2
-trxfee_amount = 0
-trx_type = 'trx'
 import wallet_cli
-import transaction_validator 
+import pypayd
 
-wallet = wallet_cli.wallet()
-transaction = wallet.create_transaction(
-    recipient_pubkey= recipient_pubkey,
-    amount= amount,
-    trxfee_amount=trxfee_amount,
-    trx_type= trx_type
-)
+DEFAULT_TRX_TYPE = 'trx'
 
-# transaction_validator.validate_transaction(transaction)
-print(json.dumps(transaction, indent=4))
+
+def get_trx_data_from_user() -> dict:
+    recipient_pubkey = input("please enter recipient public key: ")
+    transaction_amount = float(input("please enter transaction amount: "))
+    trxfee_amount = float(input("enter trxfee amount(set 0 if you dont want to pay trxfee): "))
+    trx_type = DEFAULT_TRX_TYPE
+
+    return { 'recipient_pubkey' : recipient_pubkey,
+    'amount' : transaction_amount,
+    'trxfee_amount' : trxfee_amount,
+    'trx_type' : trx_type}
+
+
+def create_new_transaction(**kwargs):
+    wallet = wallet_cli.wallet()
+    transaction = wallet.create_transaction(**kwargs)
+    return json.dumps(transaction, indent=4, sort_keys= True)
+
+
+def send_transaction_to_every_neighbour_node(transaction):
+    neighbour_nodes_list = pypayd.deamon_node.relative_nodes
+    successfull_request_count = 0
+    for neighbour in neighbour_nodes_list:
+        request = requests.post(url=neighbour, data= transaction)
+        if request.status_code == 200:
+            successfull_request_count += 1
+        else:
+            # the next line may cause an error in .json()
+            print(f"sending tranaction to node: {neighbour} failed, {request.json()}")
+    
+    if successfull_request_count < 1:
+        print("transactions sending failed: no attempts were accepted")
+    
+
+if __name__ == "__main__":
+    user_input = get_trx_data_from_user()
+    jsonified_transaction = create_new_transaction(**user_input)
+    send_transaction_to_every_neighbour_node(jsonified_transaction)
