@@ -8,8 +8,11 @@ import mempool
 chain = chain.chain()
 mempool = mempool.mempool()
 
-MIN_TRXS_TO_MINE_BLOCK = 5
-
+MIN_TRXS_TO_MINE_BLOCK:int = 5
+INITIAL_NODES_LIST:list = [
+    "127.0.0.1:8000",
+    "127.0.0.1:9000",
+]
 
 
 class BlockChain:
@@ -39,7 +42,7 @@ class BlockChain:
     
     def add_transaction_to_mempool(self, transaction:dict):
         self.__mempool.add_transaction(transaction = transaction)
-        if len(self.__mempool.number_of_transactions) >= MIN_TRXS_TO_MINE_BLOCK:
+        if self.__mempool.number_of_transactions >= MIN_TRXS_TO_MINE_BLOCK:
             print("start mining")
     
     def add_block_to_chain(self, block):
@@ -50,9 +53,14 @@ class BlockChain:
 deamon_node = BlockChain(
     chain = chain,
     mempool= mempool,
-    relative_nodes= []
+    relative_nodes= INITIAL_NODES_LIST
     )
 
 
 if __name__ == "__main__":
-    network.app.run(port=8000)
+    """
+    the port should be 80 but since the test is running on a local machine
+    i am using ports but it is not required in production mode
+    """
+    port_number = input("enter your port except(8000, 9000): ")
+    network.app.run(port=int(port_number), debug=False)
