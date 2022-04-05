@@ -39,9 +39,6 @@ def new_transaction():
     dictified_recieved_data = json.loads(recieved_transaction)
     response_data = transaction_core.validate_transaction(dictified_recieved_data)
 
-    if response_data[1] == CORRECT_STATUS_CODE:
-        pypayd.deamon_node.add_transaction_to_mempool(dictified_recieved_data)
-
     return jsonify(
         {"message" : response_data[0], "status" : response_data[1]}
     )

@@ -19,7 +19,7 @@ MIN_TRX_AMOUNT = 0.1
 
 
 def get_hashed_signable_data(transaction:dict) -> int:
-    print("this function is performiong...")
+    # print("this function is performiong...")
     signable_data = OrderedDict()
     signable_data['incoins'] = transaction.get('incoins')
     signable_data['outcoins'] = transaction.get('outcoins')
@@ -27,9 +27,9 @@ def get_hashed_signable_data(transaction:dict) -> int:
 
     jsonified_signable_data = json.dumps(signable_data, indent=4, sort_keys=True)
     # print("\tfunction: get_hashed_signable_data\n", )
-    print("\tjsonified_signable_data = \n",jsonified_signable_data)
+    # print("\tjsonified_signable_data = \n",jsonified_signable_data)
     hexified_data = sha256(jsonified_signable_data.encode()).hexdigest()
-    print("hexified data is : ", hexified_data, "\n\n")
+    # print("hexified data is : ", hexified_data, "\n\n")
     return int(hexified_data, 16)
 
 
@@ -97,7 +97,7 @@ def trx_structure_validator(transaction:dict) -> None:
         raise ValueError("incoins is not in a valid form")
 
     elif type(trx_outcoins) not in (dict, OrderedDict):
-        print(trx_outcoins)
+        # print(trx_outcoins)
         raise ValueError("outcoins is not in a valid form")
 
     elif type(trx_signature) is not int:
@@ -106,8 +106,8 @@ def trx_structure_validator(transaction:dict) -> None:
         raise ValueError("signature is not in a valid form")
     
     elif type(trx_pubkey) != str:
-        print(trx_pubkey)
-        print(type(trx_pubkey))
+        # print(trx_pubkey)
+        # print(type(trx_pubkey))
         raise ValueError("sender public key is in an invalid form")
 
 
@@ -137,8 +137,8 @@ def validate_input_trx_coins(transaction:OrderedDict, validating_block_transacti
     """
     incoins_list = transaction.get("incoins")
     sender_pubkey = transaction.get("sender_pubkey")
-    print(incoins_list)
-    print(sender_pubkey)
+    # print(incoins_list)
+    # print(sender_pubkey)
     coin_validator.validate_coin(incoins_list, sender_pubkey, validating_block_transactions)
 
 
@@ -153,11 +153,11 @@ def incoins_validator(incoins):
 
 
 def validate_transaction(transaction:OrderedDict, validating_block_transactions:bool = False):
-    print("\n\ttransaction validation started...\n")
+    # print("\n\ttransaction validation started...\n")
     trx_structure_validator(transaction= transaction)
     trx_metadata_validator(transaction['metadata'])
     trxfee_amount_validator(transaction['outcoins']['trxfee']['coin'])
     transaction_amount_validator(transaction['outcoins']['recipient']['coin'])
     trx_signarue_validator(transaction = transaction)
     validate_input_trx_coins(transaction = transaction, validating_block_transactions = validating_block_transactions)
-    print("\n\ttransaction validated successfully...")
+    # print("\n\ttransaction validated successfully...")

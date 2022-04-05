@@ -50,6 +50,8 @@ class BLOCK:
 
             if trx_number >= TRX_LIST_LIMIT:
                 break
+        
+        # add another function here that adds selftrx and trxfee trx to transactions_list
 
     def __stirngify_hashable_data(self) -> str:
         stringified_data = json.dumps(self.hashable_data)
@@ -144,8 +146,9 @@ def mine(transactions_list:list, last_block_index:int = 0, lastblock_hash:str = 
     # TODO: the next line(s) should contain a function that adds selftrx and trxfee trx to transactions list
     processed_transactions_list = transactions_list
     while True:
-        if block._mine_block(transactions_list= transactions_list) is not None:
+        if block._mine_block(transactions_list= processed_transactions_list) is not None:
             print("new block mined")
+            # the next line should call a function defined either in network.py or pypayd.py-> deamon node as a method
             return "tell every body"
 
         else:

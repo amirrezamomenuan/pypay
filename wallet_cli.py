@@ -11,6 +11,7 @@ KEYPAIR_FILE_PATH = '.'
 KEYPAIR_FILE_NAME = 'keypair.json'
 COINS_FILE_NAME = "coins.json"
 BITS_SIZE = 1024
+MINER_REWARD = 50
         
 class wallet:
     def __init__(self) -> None:
@@ -119,11 +120,14 @@ class wallet:
         return choosen_coins                   
 
 
-    def create_transaction(self, recipient_pubkey:str, amount:float, trxfee_amount:float, trx_type:str = 'trx'): #may need to take it out of class
-        incoins = self.__choose_best_coinset(
-            amount = amount,
-            trxfee = trxfee_amount
-            )
+    def create_transaction(self, recipient_pubkey:str, amount:float, trxfee_amount:float, trx_type:str = 'trx', is_self_trx:bool = False): #may need to take it out of class
+        if is_self_trx:
+            incoins = []
+        else:
+            incoins = self.__choose_best_coinset(
+                amount = amount,
+                trxfee = trxfee_amount
+                )
         transaction = transaction_core.create_transaction(
             pubkey = f"{self.__e},{self.__n}",
             recipient_pubkey = recipient_pubkey, 
@@ -132,13 +136,22 @@ class wallet:
             trxfee_amount = trxfee_amount,
         )
         
-
         hashed_signable_data = transaction.get_hashed_signable_data()
 
         signature = self.__sign_transaction(hashed_signable_data)
         transaction.set_signature(signature)
         transaction.cast_transaction(trx_type = trx_type)
         return transaction.get_transaction()
+    
+
+    def create_self_trx(self):
+        return self.create_transaction(
+            recipient_pubkey= f"{self.__e},{self.__n}",
+            amount= MINER_REWARD,
+            trxfee_amount=0,
+            trx_type= 'selftrx',
+            is_self_trx= True
+        )
 
     
 def unsign_transaction_signature(signature:str, pubkey_as_keypair: str) -> str:
