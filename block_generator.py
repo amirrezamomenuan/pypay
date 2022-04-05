@@ -3,14 +3,11 @@ import json
 from random import shuffle
 from hashlib import sha256
 from collections import OrderedDict
-
-# from block_core import generate_selftrx_transaction, generate_trxfee_transaction
-# the line above caused a circiular import error so it was replaced with the next three lines
+import requests
 
 import block_core
 import Exceptions
-# generate_selftrx_transaction = block_core.generate_selftrx_transaction
-# generate_trxfee_transaction = block_core.generate_trxfee_transaction
+import pypayd
 
 EMPTY_STR_HASH = "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
 TRX_LIST_LIMIT = 10
@@ -46,8 +43,8 @@ class BLOCK:
         trx_number = 0
         for trx in transactions_list:
             self.__add_trx_to_trxs(trx)
-            trx_number += 1
 
+            trx_number += 1
             if trx_number >= TRX_LIST_LIMIT:
                 break
         
@@ -124,14 +121,16 @@ class BLOCK:
 
 
     def _mine_block(self, transactions_list:list, max_nonce_limit:int = 1000000000):
-        self.__check_self_trx_existance()
-        self.__check_trxfee_trx_existance()
+
         self._generate_metadata()
         self._generate_trxs_list(transactions_list= transactions_list)
+        self.__check_self_trx_existance()
+        self.__check_trxfee_trx_existance()
         self.__add_mining_reward()
 
         while  self.metadata['nonce'] < max_nonce_limit:
             if self.__check_hash_is_acceptable(self.__hash_block()):
+                print(self.hashable_data)
                 return self.hashable_data
             self.__update_hashable_block()
         return None
@@ -141,19 +140,16 @@ class BLOCK:
         shuffle(self.trxs)
 
 
-def mine(transactions_list:list, last_block_index:int = 0, lastblock_hash:str = EMPTY_STR_HASH):
-    block = BLOCK(last_block_index = last_block_index, lastblock_hash= lastblock_hash)
-    # TODO: the next line(s) should contain a function that adds selftrx and trxfee trx to transactions list
-    processed_transactions_list = transactions_list
+def mine(transactions_list:list, lastblock_index:int = 0, lastblock_hash:str = EMPTY_STR_HASH):
+    block = BLOCK(last_block_index = lastblock_index, lastblock_hash= lastblock_hash)
+
     while True:
-        if block._mine_block(transactions_list= processed_transactions_list) is not None:
-            print("new block mined")
-            # the next line should call a function defined either in network.py or pypayd.py-> deamon node as a method
-            return "tell every body"
+        if block._mine_block(transactions_list= transactions_list) is not None:
+            # passing all next lines to block core
+            block_core.add_block_to_chain(block= block.hashable_data)
+            block_core.send_newly_mined_block_to_all_neighbour_nodes(block= block.hashable_data)
+
+            return
 
         else:
             block._shuffle_trxs()
-
-
-
-

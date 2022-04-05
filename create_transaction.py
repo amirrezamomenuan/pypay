@@ -26,17 +26,21 @@ def create_new_transaction(**kwargs):
 
 
 def send_transaction_to_every_neighbour_node(transaction):
+    print(transaction)
     neighbour_nodes_list = pypayd.deamon_node.relative_nodes
     successfull_request_count = 0
     
     for neighbour in neighbour_nodes_list:
         url = "http://" + neighbour + "/new-transaction"
-        request = requests.post(url=url, json= transaction)
+        try:
+            request = requests.post(url=url, json= transaction)
 
-        if request.json().get("status") == 200:
-            successfull_request_count += 1
-        else:
-            print(f"sending tranaction to node: {neighbour} failed, {request.json()}")
+            if request.json().get("status") == 200:
+                successfull_request_count += 1
+            else:
+                print(f"sending tranaction to node: {neighbour} failed, {request.json()}")
+        except:
+            pass
     
     if successfull_request_count < 1:
         print("transactions sending failed: no attempts were accepted")
