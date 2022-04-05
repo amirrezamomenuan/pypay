@@ -1,5 +1,3 @@
-# from block_validator import validate_block
-import sys
 import threading
 import requests
 
@@ -8,18 +6,13 @@ import Exceptions
 import pypayd
 import wallet_cli
 
-
-def fetch_trxd_from_mempool():
-    pass
-
-
 def generate_selftrx_transaction():
     self_trx_mining_reward = wallet_cli.wallet().create_self_trx()
     pypayd.deamon_node.add_transaction_to_mempool(self_trx_mining_reward, start_minig=False)
 
 
 def generate_trxfee_transaction():
-    trxfee_mining_trx = wallet_cli.wallet().create_trxfee_trx(pypayd.deamon_node.__mempool.get_all_transactions())
+    trxfee_mining_trx = wallet_cli.wallet().create_trxfee_trx(pypayd.deamon_node.mempool)
     pypayd.deamon_node.add_transaction_to_mempool(trxfee_mining_trx, start_minig=False)
 
 
@@ -33,7 +26,7 @@ def create_block_minable_data() -> dict:
         last_block_index = 0
         
     data = {
-        'transactions_list':pypayd.deamon_node.__mempool.get_all_transactions(),
+        'transactions_list':pypayd.deamon_node.mempool,
         'lastblock_index':last_block_index,
         'lastblock_hash':last_block_hash
     }
