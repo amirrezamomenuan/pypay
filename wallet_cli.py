@@ -81,7 +81,6 @@ class wallet:
             hashed_trx_data_as_integer = int(hashed_trx_data, 16)
         else:
             hashed_trx_data_as_integer = hashed_trx_data
-        print("\tdata that is going to be signed:\n, \t", hashed_trx_data_as_integer)
         signature = pow(hashed_trx_data_as_integer, self.__d, self.__n)
         return signature
     
@@ -120,9 +119,10 @@ class wallet:
         return choosen_coins                   
 
 
-    def create_transaction(self, recipient_pubkey:str, amount:float, trxfee_amount:float, trx_type:str = 'trx', is_self_trx:bool = False): #may need to take it out of class
-        if is_self_trx:
-            incoins = []
+    def create_transaction(self, recipient_pubkey:str, amount:float, trxfee_amount:float, trx_type:str = 'trx', incoins:list = []): #may need to take it out of class
+        if len(incoins) > 0:
+            incoins = incoins
+
         else:
             incoins = self.__choose_best_coinset(
                 amount = amount,
@@ -150,7 +150,30 @@ class wallet:
             amount= MINER_REWARD,
             trxfee_amount=0,
             trx_type= 'selftrx',
-            is_self_trx= True
+            incoins= []
+        )
+
+
+    def create_trxfee_trx(self, transactions_list: list):
+        """
+        this method recieves a list of transactions and searches for trxfee coin,
+        then selects all of them and creates a transaction with trxfee coins as incoins
+        and sets the recipient as himself
+        """
+        trxfee_coins = []
+        trxfee_miner_reward = 0
+        for transaction in transactions_list:
+            trxfee_coin = transaction['outcoins']['trxfee']['coin']
+            if trxfee_coin is not None:
+                trxfee_coins.append(trxfee_coin)
+                trxfee_miner_reward += float(trxfee_coin.split('Q')[2])
+
+        return self.create_transaction(
+            recipient_pubkey= f"{self.__e},{self.__n}",
+            amount= trxfee_miner_reward,
+            trxfee_amount=0,
+            trx_type= 'trxfee',
+            incoins= trxfee_coins
         )
 
     

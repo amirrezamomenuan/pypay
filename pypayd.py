@@ -4,6 +4,8 @@ import threading
 import network
 import chain
 import mempool
+import wallet_cli
+import block_generator
 
 chain = chain.chain()
 mempool = mempool.mempool()
@@ -37,8 +39,29 @@ class BlockChain:
 
     def __start_mining(self):
         #create selftrx using wallet-cli and transaction generator
+        self_trx_mining_reward = wallet_cli.wallet().create_self_trx()
+        self.add_transaction_to_mempool(self_trx_mining_reward, start_minig=False)
+
         #create trxfee miner reward trx using wallet-cli and transaction generator
+        trxfee_mining_trx = wallet_cli.wallet().create_trxfee_trx(self.__mempool.get_all_transactions())
+        self.add_transaction_to_mempool(trxfee_mining_trx, start_minig=False)
+        
         # start mining in a new thread and by block generator -> mine()
+        last_block_metadata = self.get_last_block().get("metadata")
+        if last_block_metadata is not None:
+            last_block_index = last_block_metadata.get('index')
+            last_block_hash = last_block_metadata.get('lastblock_hash')
+        else:
+            last_block_hash = "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+            last_block_index = 0
+        
+        
+        data = {
+            transactions_list:self.__mempool.get_all_transactions(),
+            last_block_index:last_block_index,
+            last_block_hash:last_block_hash
+        }
+        mine_thread = threading.Thread(target=block_generator, kwargs=data)
         # if mined a data successfully tell every body using either( mine || deamon node || something else)
         pass
 
@@ -49,11 +72,11 @@ class BlockChain:
         except:
             return {}
     
-    def add_transaction_to_mempool(self, transaction:dict):
+    def add_transaction_to_mempool(self, transaction:dict, start_minig:bool = True):
         self.__mempool.add_transaction(transaction = transaction)
-        print("number of transactions stacked in mempool is : ", self.__mempool.number_of_transactions)
-        if self.__mempool.number_of_transactions >= MIN_TRXS_TO_MINE_BLOCK:
-            print("start mining")
+        if self.__mempool.number_of_transactions >= MIN_TRXS_TO_MINE_BLOCK and start_minig is True:
+            self.__start_mining()
+            
     
     def add_block_to_chain(self, block):
         self.__chain.append_new_block(block)
