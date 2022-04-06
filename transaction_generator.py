@@ -70,14 +70,12 @@ class TRANSACTION:
         if self.reverse_transaction_amount > 0:
             self.outcoins['sender'] = self.__cast_coin(self, amount=self.reverse_transaction_amount, pubkey=self.pubkey)
         else:
-            self.outcoins['sender']['pubkey'] = self.pubkey
-            self.outcoins['sender']['coin'] = None
+            self.outcoins['sender'] = {'pubkey': self.pubkey, "coin": None}
         
         if self.has_transaction_fee:
             self.outcoins['trxfee'] = self.__cast_coin(self, amount=self.trxfee_amount, pubkey="miner")
         else:
-            self.outcoins['trxfee']['pubkey'] = "miner"
-            self.outcoins['trxfee']['coin'] = None
+            self.outcoins['sender'] = {'pubkey': "miner", "coin": None}
         
 
     def __construct_signable_hashed_data(self) -> int:
