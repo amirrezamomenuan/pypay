@@ -41,7 +41,9 @@ def validate_transaction(transaction, is_validating_block: bool = False) -> bool
         # turn dict to ordereddict
         # print("\t\t here we are in validate_transaction in transaction_core")
         transaction_validator.validate_transaction(transaction=transaction, validating_block_transactions=is_validating_block)
+        print("error in area 100")
         add_transaction_to_mempool(transaction)
+        print("error in area 101")
         # print("transaction validated and added to mempool")
         return "transaction validated and added to mempool", 200
     except Exceptions.InvalidBlock:
@@ -57,5 +59,5 @@ def validate_transaction(transaction, is_validating_block: bool = False) -> bool
         # print(f"you gave an invalid value {ve}")
         return f"you gave an invalid value {ve}", 400
     except Exception as e:
-        # print("this is an error", e)
+        print("this is an error", e)
         raise Exception(f"{e}")
