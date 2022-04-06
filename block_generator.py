@@ -44,7 +44,8 @@ class BLOCK:
         for trx in transactions_list:
             self.__add_trx_to_trxs(trx)
 
-            trx_number += 1
+            if trx['metadata']['status'] != 'selftrx' or trx['metadata']['status'] != 'trxfee':
+                trx_number += 1
             if trx_number >= TRX_LIST_LIMIT:
                 break
         
@@ -86,7 +87,7 @@ class BLOCK:
     def __add_mining_reward(self):
         # check the trxfee protocol later
         self_trx = block_core.generate_selftrx_transaction()
-        trxfee = block_core.generate_trxfee_transaction(self.trxs)
+        trxfee = block_core.generate_trxfee_transaction()
 
         self.__add_trx_to_trxs(self_trx)
         if trxfee is not None:
@@ -126,7 +127,7 @@ class BLOCK:
         self._generate_trxs_list(transactions_list= transactions_list)
         self.__check_self_trx_existance()
         self.__check_trxfee_trx_existance()
-        self.__add_mining_reward()
+        # self.__add_mining_reward()
 
         while  self.metadata['nonce'] < max_nonce_limit:
             if self.__check_hash_is_acceptable(self.__hash_block()):

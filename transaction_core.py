@@ -27,6 +27,15 @@ def create_transaction(pubkey:str, recipient_pubkey:str, incoins:list, amount:fl
     return transaction
 
 
+        # transaction = transaction_core.create_transaction(
+        #     pubkey = f"{self.__e},{self.__n}",
+        #     recipient_pubkey = recipient_pubkey, 
+        #     incoins = incoins,
+        #     amount = amount,
+        #     trxfee_amount = trxfee_amount,
+        # )
+
+
 def validate_transaction(transaction, is_validating_block: bool = False) -> bool:
     try:
         # turn dict to ordereddict

@@ -45,7 +45,7 @@ def send_newly_mined_block_to_all_neighbour_nodes(block:dict):
     for node in pypayd.deamon_node.relative_nodes:
         url ='http://' + node + "/new-block"
         try:
-            requests.post(url=url, json= node)
+            requests.post(url=url, json= block)
         except:
             pass
 
