@@ -18,9 +18,11 @@ class mempool:
     def remove_transaction(self, transaction):
         try:
             self.__ledger.remove(transaction)
-            return "transaction deleted successfully"
+            print("trx is going to be removed: ", transaction)
+            return True
         except ValueError:
-            return "transaction not in this mempool"
+            print("transaction failed to remove: ", transaction)
+            return False
     
 
     def remove_transactions_list(self, to_be_removed_transactions: list):

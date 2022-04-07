@@ -1,9 +1,10 @@
 import transaction_generator
 import transaction_validator
 import Exceptions
+import pypayd
 
 def add_transaction_to_mempool(transaction):
-    import pypayd
+    # import pypayd
     pypayd.deamon_node.add_transaction_to_mempool(transaction)
 
 def create_transaction(pubkey:str, recipient_pubkey:str, incoins:list, amount:float, trxfee_amount: float= 0):
@@ -61,3 +62,7 @@ def validate_transaction(transaction, is_validating_block: bool = False) -> bool
     except Exception as e:
         print("this is an error", e)
         raise Exception(f"{e}")
+
+
+def clear_mined_transactions(transactions_list:list) -> None:
+    pypayd.deamon_node.remove_transactions_list(transactions_list= transactions_list)

@@ -5,6 +5,7 @@ import block_validator,block_generator
 import Exceptions
 import pypayd
 import wallet_cli
+import transaction_core
 
 def generate_selftrx_transaction():
     self_trx_mining_reward = wallet_cli.wallet().create_self_trx()
@@ -21,13 +22,11 @@ def create_block_minable_data() -> dict:
     print("last block metadata is: ", last_block_metadata)
     if last_block_metadata is not None:
         last_block_index = last_block_metadata.get('index')
-        
         #the next line was a huge problem and was made by lack of consentration
         #it was using the last blocks lastblock_hash instead of 
         # generating it by hashing last block
 
         # last_block_hash = last_block_metadata.get('lastblock_hash') # no you fucking idiot
-
         last_block_hash = pypayd.deamon_node.get_last_block_hash() # going to find or write a fumction or method
     else:
         last_block_hash = "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
@@ -50,6 +49,7 @@ def mine_block():
 
 
 def send_newly_mined_block_to_all_neighbour_nodes(block:dict):
+    print("HERE TRYING TO SEND BLOCK TO RELATIVE NODES")
     for node in pypayd.deamon_node.relative_nodes:
         url ='http://' + node + "/new-block"
         try:
@@ -67,8 +67,8 @@ def handle_new_block(block:dict, last_block:dict = {}) -> tuple:
         last_block = pypayd.deamon_node.get_last_block()
         block_validator.validate_block(block = block, last_block = last_block)
         add_block_to_chain(block= block)
+        pypayd.deamon_node.remove_transactions_list(transactions_list= block.get('trxs'))
         return "block validated and added to chain successfully", 200
-
     except Exceptions.CoinException:
         return "this block contains invalid coins!", 400
     except Exceptions.DoubleSpendError:
