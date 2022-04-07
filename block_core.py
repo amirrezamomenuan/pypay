@@ -18,10 +18,17 @@ def generate_trxfee_transaction():
 
 def create_block_minable_data() -> dict:
     last_block_metadata = pypayd.deamon_node.get_last_block().get("metadata")
-    
-    if last_block_metadata == {}:
+    print("last block metadata is: ", last_block_metadata)
+    if last_block_metadata is not None:
         last_block_index = last_block_metadata.get('index')
-        last_block_hash = last_block_metadata.get('lastblock_hash')
+        
+        #the next line was a huge problem and was made by lack of consentration
+        #it was using the last blocks lastblock_hash instead of 
+        # generating it by hashing last block
+
+        # last_block_hash = last_block_metadata.get('lastblock_hash') # no you fucking idiot
+
+        last_block_hash = pypayd.deamon_node.get_last_block_hash() # going to find or write a fumction or method
     else:
         last_block_hash = "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         last_block_index = 0

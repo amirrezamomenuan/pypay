@@ -1,4 +1,5 @@
-import threading
+import json
+from hashlib import sha256
 
 
 import network
@@ -46,6 +47,17 @@ class BlockChain:
             return self.__chain.get_full_chain()[-1]
         except:
             return {}
+        
+
+    def get_last_block_hash(self):
+        try:
+            last_block = self.get_last_block()
+            last_block_hash = sha256(json.dumps(last_block).encode()).hexdigest()
+            print("\n\t \t last_block_hash is : ",last_block_hash)
+            return last_block_hash
+        except:
+            return "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a" # it is hard coded and very bad
+
     
     def add_transaction_to_mempool(self, transaction:dict, start_minig:bool = True):
         self.__mempool.add_transaction(transaction = transaction)
