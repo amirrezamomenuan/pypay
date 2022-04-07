@@ -18,7 +18,8 @@ def generate_trxfee_transaction():
 
 def create_block_minable_data() -> dict:
     last_block_metadata = pypayd.deamon_node.get_last_block().get("metadata")
-    if last_block_metadata is not None:
+    
+    if last_block_metadata == {}:
         last_block_index = last_block_metadata.get('index')
         last_block_hash = last_block_metadata.get('lastblock_hash')
     else:
