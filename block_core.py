@@ -64,18 +64,23 @@ def add_block_to_chain(block):
 
 def handle_new_block(block:dict, last_block:dict = {}) -> tuple:
     try:
-        last_block = pypayd.deamon_node.get_last_block()
         block_validator.validate_block(block = block, last_block = last_block)
         add_block_to_chain(block= block)
         pypayd.deamon_node.remove_transactions_list(transactions_list= block.get('trxs'))
+        print("block validated and added to chain successfully")
         return "block validated and added to chain successfully", 200
     except Exceptions.CoinException:
+        print("this block contains invalid coins!", 400)
         return "this block contains invalid coins!", 400
     except Exceptions.DoubleSpendError:
+        print("this block cointains a coin that is already consumed")
         return "this block cointains a coin that is already consumed", 400
     except Exceptions.InvalidBlock as be:
+        print(f" invalid block: {be}")
         return f" invalid block: {be}", 400
     except Exceptions.InvalidTransaction as te:
+        print(f"invalid transaction(s) : {te}")
         return f"invalid transaction(s) : {te}", 400
     except:
+        print(f"this block failed to validate due to an unexpected error")
         return f"this block failed to validate due to an unexpected error", 400

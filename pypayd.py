@@ -73,18 +73,6 @@ class BlockChain:
         self.__mempool.remove_transactions_list(to_be_removed_transactions = transactions_list)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 deamon_node = BlockChain(
     chain = chain,
     mempool= mempool,
@@ -97,5 +85,7 @@ if __name__ == "__main__":
     the port should be 80 but since the test is running on a local machine
     i am using ports but it is not required in production mode
     """
+    # load initial data by sending request to mother nodes
     port_number = input("enter your port except(8000, 9000): ")
     network.app.run(port=int(port_number), debug=False)
+    

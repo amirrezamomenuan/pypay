@@ -42,9 +42,9 @@ def validate_transaction(transaction, is_validating_block: bool = False) -> bool
         # turn dict to ordereddict
         # print("\t\t here we are in validate_transaction in transaction_core")
         transaction_validator.validate_transaction(transaction=transaction, validating_block_transactions=is_validating_block)
-        print("error in area 100")
+        print("executed in area 100")
         add_transaction_to_mempool(transaction)
-        print("error in area 101")
+        print("executed in area 101")
         # print("transaction validated and added to mempool")
         return "transaction validated and added to mempool", 200
     except Exceptions.InvalidBlock:
@@ -64,5 +64,4 @@ def validate_transaction(transaction, is_validating_block: bool = False) -> bool
         raise Exception(f"{e}")
 
 
-def clear_mined_transactions(transactions_list:list) -> None:
-    pypayd.deamon_node.remove_transactions_list(transactions_list= transactions_list)
+    

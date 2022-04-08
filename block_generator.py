@@ -148,6 +148,7 @@ def mine(transactions_list:list, lastblock_index:int = 0, lastblock_hash:str = E
         if block._mine_block(transactions_list= transactions_list) is not None:
             # passing all next lines to block core
             block_core.add_block_to_chain(block= block.hashable_data)
+            pypayd.deamon_node.remove_transactions_list(block.hashable_data.get("trxs"))
             block_core.send_newly_mined_block_to_all_neighbour_nodes(block= block.hashable_data)
 
             return
