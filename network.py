@@ -47,18 +47,22 @@ def new_transaction():
 
 @app.route("/new-block", methods = ["POST"])
 def new_block():
-    last_block = pypayd.deamon_node.get_last_block()
-    recieved_block = request.get_json()
-    response_data = block_core.handle_new_block(block = recieved_block, last_block=last_block)
-    print("LAST BLOCK IS: ", last_block)
-    if response_data[1] == CORRECT_STATUS_CODE:
-        # add block to blockchain
-        print("added to ledger successfully")
-        pass
+    # last_block = pypayd.deamon_node.get_last_block()
+    # recieved_block = request.get_json()
+    # response_data = block_core.handle_new_block(block = recieved_block, last_block=last_block)
+    # print("LAST BLOCK IS: ", last_block)
+    # if response_data[1] == CORRECT_STATUS_CODE:
+    #     # add block to blockchain
+    #     print("added to chain successfully")
+    #     pass
 
+    # return jsonify(
+    #     {"message" : response_data[0], "status" : response_data[1]}
+    # )
+    print("new block recieved")
+    print(request.get_json())
     return jsonify(
-        {"message" : response_data[0], "status" : response_data[1]}
-    )
+        {"message" : 'recieved', "status" : 200})
     # __________________ kind of done ____________________
 
 
