@@ -171,7 +171,7 @@ class wallet:
                 trxfee_coins.append(trxfee_coin)
                 trxfee_miner_reward += float(trxfee_coin.split('Q')[2])
 
-        if trxfee_miner_reward >= 0:
+        if trxfee_miner_reward > 0:
             return self.create_transaction(
                 recipient_pubkey= f"{self.__e},{self.__n}",
                 amount= trxfee_miner_reward,

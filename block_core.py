@@ -14,7 +14,8 @@ def generate_selftrx_transaction():
 
 def generate_trxfee_transaction():
     trxfee_mining_trx = wallet_cli.wallet().create_trxfee_trx(pypayd.deamon_node.mempool)
-    pypayd.deamon_node.add_transaction_to_mempool(trxfee_mining_trx, start_minig=False)
+    if trxfee_mining_trx is not None:
+        pypayd.deamon_node.add_transaction_to_mempool(trxfee_mining_trx, start_minig=False)
 
 
 def create_block_minable_data() -> dict:
