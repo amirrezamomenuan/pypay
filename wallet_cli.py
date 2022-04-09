@@ -120,7 +120,7 @@ class wallet:
 
 
     def create_transaction(self, recipient_pubkey:str, amount:float, trxfee_amount:float, trx_type:str = 'trx', incoins:list = []): #may need to take it out of class
-        if len(incoins) > 0:
+        if len(incoins) > 0 or trx_type == 'selftrx':
             incoins = incoins
 
         else:
@@ -163,18 +163,22 @@ class wallet:
         trxfee_coins = []
         trxfee_miner_reward = 0
         for transaction in transactions_list:
-            trxfee_coin = transaction['outcoins']['trxfee']['coin']
+            try:
+                trxfee_coin = transaction['outcoins']['trxfee']['coin']
+            except:
+                pass
             if trxfee_coin is not None:
                 trxfee_coins.append(trxfee_coin)
                 trxfee_miner_reward += float(trxfee_coin.split('Q')[2])
 
-        return self.create_transaction(
-            recipient_pubkey= f"{self.__e},{self.__n}",
-            amount= trxfee_miner_reward,
-            trxfee_amount=0,
-            trx_type= 'trxfee',
-            incoins= trxfee_coins
-        )
+        if trxfee_miner_reward >= 0:
+            return self.create_transaction(
+                recipient_pubkey= f"{self.__e},{self.__n}",
+                amount= trxfee_miner_reward,
+                trxfee_amount=0,
+                trx_type= 'trxfee',
+                incoins= trxfee_coins
+            )
 
     
 def unsign_transaction_signature(signature:str, pubkey_as_keypair: str) -> str:

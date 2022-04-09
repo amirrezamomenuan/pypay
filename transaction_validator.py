@@ -59,8 +59,11 @@ def trxfee_amount_validator(trxfee_coin: str) -> None:
 
         if transaction fee is greater than 0 and lower than minimum trxfee amount this function wont raise any errors
     """
-    trxfee_amount = float(trxfee_coin.split("Q")[2])
-
+    if trxfee_coin is not None:
+        trxfee_amount = float(trxfee_coin.split("Q")[2])
+    else:
+        trxfee_amount = 0
+        
     if trxfee_amount == 0:
         return
 
@@ -142,9 +145,9 @@ def validate_input_trx_coins(transaction:OrderedDict, validating_block_transacti
     coin_validator.validate_coin(incoins_list, sender_pubkey, validating_block_transactions)
 
 
-def trxfee_validator(fxg):
+def trxfee_validator(trxfee_amount: float):
     # passing due to import error in transaction generator
-    return True
+    return trxfee_amount >= 0.001
 
 
 def incoins_validator(incoins):

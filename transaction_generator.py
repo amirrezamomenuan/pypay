@@ -75,7 +75,7 @@ class TRANSACTION:
         if self.has_transaction_fee:
             self.outcoins['trxfee'] = self.__cast_coin(self, amount=self.trxfee_amount, pubkey="miner")
         else:
-            self.outcoins['sender'] = {'pubkey': "miner", "coin": None}
+            self.outcoins['trxfee'] = {'pubkey': "miner", "coin": None}
         
 
     def __construct_signable_hashed_data(self) -> int:
