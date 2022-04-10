@@ -10,7 +10,7 @@ class TRX_TYPES:
     trxfee = 'trxfee'
 
 blocks = pypayd.chain.get_full_chain()
-LAST_BLOCK_INDEX = pypayd.chain.last_block_index
+LAST_BLOCK_INDEX = pypayd.deamon_node.last_block_index
 
 
 def check_coins_count(validated_coins_count:int , coins_count:int , pubkey:str) -> None:
@@ -141,8 +141,8 @@ def validate_coin(coins:list, sender_pub_key:str, validating_block_transactions:
     last_block_index = LAST_BLOCK_INDEX
     validated_coins_count = 0
 
-    while last_block_index >= 0:
-        block = blocks[last_block_index]
+    while last_block_index > 0:
+        block = blocks[last_block_index - 1] #subtract 1 because list index starts from 0 but block indexes start from 1
 
         for trx in block.get("trxs"):
             trx_status = trx.get("metadata").get("status")

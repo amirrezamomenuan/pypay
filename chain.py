@@ -30,4 +30,4 @@ class chain:
             return self.last_block.get("metadata").get('last_block_index')
         
         else:
-            return -1
+            return 0

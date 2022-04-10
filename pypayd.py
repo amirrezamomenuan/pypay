@@ -56,6 +56,10 @@ class BlockChain:
             return last_block_hash
         except:
             return "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a" # it is hard coded and very bad
+    
+    @property
+    def last_block_index(self):
+        return self.__chain.last_block_index
 
     
     def add_transaction_to_mempool(self, transaction:dict, start_minig:bool = True) -> None:
