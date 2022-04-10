@@ -54,7 +54,8 @@ def new_block():
     if response_data[1] == CORRECT_STATUS_CODE:
         # add block to blockchain
         print("added to chain successfully")
-        pass
+    else:
+        print("AN ERROR OCCURED: ",response_data[0])
 
     return jsonify(
         {"message" : response_data[0], "status" : response_data[1]}

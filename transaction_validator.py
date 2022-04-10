@@ -83,7 +83,7 @@ def transaction_amount_validator(trx_coin: str) -> None:
     if trx_amount > MAX_TRX_AMOUNT:
         raise ValueError(f"maximum amount for transaction coin is : {MAX_TRX_AMOUNT}")
     elif trx_amount < MIN_TRX_AMOUNT:
-        raise ValueError(f"minimum amount for transaction coin is : {MAX_TRX_AMOUNT}")
+        raise ValueError(f"minimum amount for transaction coin is : {MIN_TRX_AMOUNT}")
 
 
 def trx_structure_validator(transaction:dict) -> None:
