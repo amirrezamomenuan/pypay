@@ -51,11 +51,11 @@ class BlockChain:
         
 
     def get_last_block_hash(self) -> str:
-        try:
+        if self.last_block_index > 0:
             last_block = self.get_last_block()
-            last_block_hash = sha256(json.dumps(last_block).encode()).hexdigest()
+            last_block_hash = sha256(json.dumps(last_block, sort_keys=True).encode()).hexdigest()
             return last_block_hash
-        except:
+        else:
             return "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a" # it is hard coded and very bad
     
     @property

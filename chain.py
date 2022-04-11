@@ -29,7 +29,7 @@ class chain:
     @property
     def last_block_index(self) -> int:
         if self.last_block != "genesis block":
-            return self.last_block.get("metadata").get('last_block_index')
+            return self.last_block.get("metadata").get('index')
         
         else:
             return 0
