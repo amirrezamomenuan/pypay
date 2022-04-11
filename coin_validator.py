@@ -139,13 +139,19 @@ def validate_coin(coins:list, sender_pub_key:str, validating_block_transactions:
         check_mempool_transaction_coins(coins, sender_pub_key)
 
     last_block_index = LAST_BLOCK_INDEX
+
+    if last_block_index <= 0:
+        return
+
     validated_coins_count = 0
 
     while last_block_index > 0:
         block = blocks[last_block_index - 1] #subtract 1 because list index starts from 0 but block indexes start from 1
 
+        print(f"NUMBER OF TRANSACTIONS IN BLOCK WITH INDEX {last_block_index} IS : {block.get('trxs')}")
         for trx in block.get("trxs"):
             trx_status = trx.get("metadata").get("status")
+            print('CHECKING COINS USING BLOCK: ', last_block_index)
             if trx_status == TRX_TYPES.trx:
                 check_incoins(trx, coins, last_block_index)
                 validated_coins_count += check_outcoins(trx, coins, sender_pub_key)

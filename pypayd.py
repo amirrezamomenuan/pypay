@@ -1,11 +1,11 @@
 import json
 from hashlib import sha256
 
+import requests
 
 import network
 import chain
 import mempool
-
 import block_core
 
 chain = chain.chain()
@@ -16,6 +16,7 @@ INITIAL_NODES_LIST:list = [
     "127.0.0.1:8000",
     "127.0.0.1:9000",
 ]
+INITIAL_BOOT_DATA_URL = "/initial-boot-data"
 
 
 class BlockChain:
@@ -64,8 +65,13 @@ class BlockChain:
     
     def add_transaction_to_mempool(self, transaction:dict, start_minig:bool = True) -> None:
         self.__mempool.add_transaction(transaction = transaction)
-        if self.__mempool.number_of_transactions >= MIN_TRXS_TO_MINE_BLOCK and start_minig is True:
+        if self.__mempool.number_of_transactions >= (MIN_TRXS_TO_MINE_BLOCK * 1) and start_minig is True:
             self.__start_mining()
+    
+    
+    def add_transactions_list_to_mempool(self, transactions_list:list):
+        for trx in transactions_list:
+            self.add_transaction_to_mempool(transaction= trx, start_minig=True)
             
     
     def add_block_to_chain(self, block):
@@ -75,6 +81,28 @@ class BlockChain:
 
     def remove_transactions_list(self,transactions_list: list) -> None:
         self.__mempool.remove_transactions_list(to_be_removed_transactions = transactions_list)
+    
+
+    def add_to_relative_nodes(self, node:str):
+        self.__relative_nodes.append(node)
+
+
+    def set_full_chain(self, chain:list):
+        self.__chain.update_chain(chain = chain)
+
+
+def load_initial_boot_data(deamon_node:BlockChain):
+    initial_boot_data = requests.get('http://'+INITIAL_NODES_LIST[0] + INITIAL_BOOT_DATA_URL)
+
+    if initial_boot_data.status_code == network.CORRECT_STATUS_CODE:
+        initial_boot_data = initial_boot_data.json()
+        deamon_node.add_transactions_list_to_mempool(transactions_list= initial_boot_data.get('mempool') or [])
+        deamon_node.set_full_chain(chain = initial_boot_data.get('full_chain') or [])
+        
+        for node in initial_boot_data.get('relative_nodes'):
+            deamon_node.add_to_relative_nodes(node = node)
+    else:
+        print('initial_data not loaded')
 
 
 deamon_node = BlockChain(
@@ -89,7 +117,10 @@ if __name__ == "__main__":
     the port should be 80 but since the test is running on a local machine
     i am using ports but it is not required in production mode
     """
-    # load initial data by sending request to mother nodes
+
+    is_mother_node = bool(True if input('are you running a mother node (Y/N) :') == "Y" else False)
+    if is_mother_node is False:
+        load_initial_boot_data(deamon_node)
+
     port_number = input("enter your port except(8000, 9000): ")
     network.app.run(port=int(port_number), debug=False)
-    

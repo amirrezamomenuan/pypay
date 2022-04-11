@@ -52,7 +52,7 @@ class BLOCK:
         # add another function here that adds selftrx and trxfee trx to transactions_list
 
     def __stirngify_hashable_data(self) -> str:
-        stringified_data = json.dumps(self.hashable_data)
+        stringified_data = json.dumps(self.hashable_data, sort_keys= True)
         return stringified_data
 
 
@@ -77,6 +77,7 @@ class BLOCK:
         stringified_data = self.__cast_hashable_block()
         hashed_data = sha256(stringified_data.encode())
         human_readable_hashed_data = hashed_data.hexdigest()
+        setattr(self, 'hashed_data_result', human_readable_hashed_data)
         return human_readable_hashed_data
 
 
@@ -121,7 +122,7 @@ class BLOCK:
             raise Exceptions.TrxfeeTrxDoesNotExist(error_message)
 
 
-    def _mine_block(self, transactions_list:list, max_nonce_limit:int = 1000000000):
+    def _mine_block(self, transactions_list:list, max_nonce_limit:int = 1000000000) -> dict:
 
         self._generate_metadata()
         self._generate_trxs_list(transactions_list= transactions_list)
@@ -147,10 +148,10 @@ def mine(transactions_list:list, lastblock_index:int = 0, lastblock_hash:str = E
     while True:
         if block._mine_block(transactions_list= transactions_list) is not None:
             # passing all next lines to block core
-            block_core.add_block_to_chain(block= block.hashable_data)
-            pypayd.deamon_node.remove_transactions_list(block.hashable_data.get("trxs"))
-            block_core.send_newly_mined_block_to_all_neighbour_nodes(block= block.hashable_data)
-
+            # block_core.add_block_to_chain(block= block.hashable_data) # commented to prevent adding block before sending to other nodes
+            print("data hash when mining is: ", block.hashed_data_result)
+            pypayd.deamon_node.remove_transactions_list(block.hashable_data.get("trxs"))# delete from here and add after validated
+            block_core.send_newly_mined_block_to_all_neighbour_nodes(block= block.hashable_data) 
             return
 
         else:

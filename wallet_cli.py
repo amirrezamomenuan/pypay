@@ -122,7 +122,6 @@ class wallet:
     def create_transaction(self, recipient_pubkey:str, amount:float, trxfee_amount:float, trx_type:str = 'trx', incoins:list = []): #may need to take it out of class
         if len(incoins) > 0 or trx_type == 'selftrx':
             incoins = incoins
-
         else:
             incoins = self.__choose_best_coinset(
                 amount = amount,

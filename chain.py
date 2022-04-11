@@ -5,8 +5,10 @@ class chain:
         self.__chain:list = initial_chain
     
     
-    def update_chain(self, point:int, chain_difference:list):
-        self.__chain = self.__chain[:point] + chain_difference
+    def update_chain(self, chain:list):
+        self.__chain += chain
+        print("SELF.CHAIN IS :")
+        print(self.__chain)
     
 
     def append_new_block(self, block):

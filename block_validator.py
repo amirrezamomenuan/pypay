@@ -69,7 +69,7 @@ def validate_timestamp(block:OrderedDict, last_block_ts:float = 0):
 def validate_block_nounce(block: OrderedDict, compared_to_string:str = '0000'):
     stringified_data = json.dumps(block, sort_keys=True)
     hashed_data = sha256(stringified_data.encode()).hexdigest()
-    print("stringified data is: ",stringified_data, '\n\n\n')
+    # print("stringified data is: ",stringified_data, '\n\n\n')
     print("hashed data is: ", hashed_data, '\n\n\n')
 
     # print(hashed_data)
@@ -96,7 +96,9 @@ def validate_index(block:OrderedDict, last_block_index: int = -1):
 
 def validate_block_metadata(block:OrderedDict, last_block_ts:float, last_block_index:int, last_block_hash:str):
     validate_timestamp(block, last_block_ts= last_block_ts)
-    # validate_block_nounce(block)
+
+    validate_block_nounce(block) # may cause a problem checkout later on
+    
     validate_last_block_hash(block, last_block_hash)
     validate_index(block, last_block_index)
 

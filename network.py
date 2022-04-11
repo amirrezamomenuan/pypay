@@ -34,8 +34,8 @@ def initial_boot_data():
 @app.route("/new-transaction", methods = ["POST"])
 def new_transaction():
     recieved_transaction = request.get_json()
-    print(type(recieved_transaction))
-    print("recieved transaction is : ",recieved_transaction)
+    # print(type(recieved_transaction))
+    # print("recieved transaction is : ",recieved_transaction)
     dictified_recieved_data = json.loads(recieved_transaction)
     response_data = transaction_core.validate_transaction(dictified_recieved_data)
 
@@ -50,10 +50,10 @@ def new_block():
     last_block = pypayd.deamon_node.get_last_block()
     recieved_block = request.get_json()
     response_data = block_core.handle_new_block(block = recieved_block, last_block=last_block)
-    print("LAST BLOCK IS: ", last_block)
+    # print("LAST BLOCK IS: ", last_block)
     if response_data[1] == CORRECT_STATUS_CODE:
         # add block to blockchain
-        print("added to chain successfully")
+        print(response_data[0])
     else:
         print("AN ERROR OCCURED: ",response_data[0])
 
