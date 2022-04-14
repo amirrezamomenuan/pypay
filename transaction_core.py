@@ -57,6 +57,8 @@ def validate_transaction(transaction, is_validating_block: bool = False) -> bool
     except Exceptions.DoubleSpendError:
         # print("coin(s) in incoins are spent before make sure to update incoins file")
         return "coin(s) in incoins are spent before make sure to update incoins file", 400
+    except Exceptions.CoinDoesNotBelongToSenderError as e:
+        return f"Coin error : {e}", 400
     except ValueError as ve:
         # print(f"you gave an invalid value {ve}")
         return f"you gave an invalid value {ve}", 400

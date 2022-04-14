@@ -4,6 +4,9 @@ class CoinException(Exception):
 class DoubleSpendError(Exception):
     pass
 
+class CoinDoesNotBelongToSenderError(Exception):
+    pass
+
 class InvalidPubKey(Exception):
     pass
 

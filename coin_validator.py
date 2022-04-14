@@ -20,8 +20,8 @@ def check_coins_count(validated_coins_count:int , coins_count:int , pubkey:str) 
     are not equal
     """
 
-    if validated_coins_count != len(coins_count):
-        raise Exceptions.CoinException(f"coin(s) does not belong to the pubkey of : {pubkey}")
+    if validated_coins_count != coins_count:
+        raise Exceptions.CoinDoesNotBelongToSenderError(f"coin(s) does not belong to the pubkey of : {pubkey}")
 
 
 def check_incoins(transaction: dict, coins_list: list, block_id: int = 0, checks_ledger:bool = False) -> None:
@@ -168,3 +168,4 @@ def validate_coin(coins:list, sender_pub_key:str, validating_block_transactions:
                 validated_coins_count += check_trxfee_outcoins(trx, coins, sender_pub_key)
 
         last_block_index -= 1
+    check_coins_count(validated_coins_count=validated_coins_count, coins_count= len(coins), pubkey=sender_pub_key)
