@@ -8,8 +8,7 @@ import chain
 import mempool
 import block_core
 
-chain = chain.chain()
-mempool = mempool.mempool()
+
 
 MIN_TRXS_TO_MINE_BLOCK:int = 2
 INITIAL_NODES_LIST:list = [
@@ -106,8 +105,8 @@ def load_initial_boot_data(deamon_node:BlockChain):
 
 
 deamon_node = BlockChain(
-    chain = chain,
-    mempool= mempool,
+    chain = chain.chain(initial_chain=[]),
+    mempool= mempool.mempool(initial_transactions=[]),
     relative_nodes= INITIAL_NODES_LIST
     )
 

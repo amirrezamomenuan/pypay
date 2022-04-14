@@ -13,6 +13,8 @@ class chain:
 
     def append_new_block(self, block):
         self.__chain.append(block)
+        print('\n\n\n\t NEW BLOCK APPENDED TO CHAIN\n\n\n')
+        print(f'\n\n\n\tCHAIN LENGTH IS {len(self.__chain)}\n\n\n')
     
 
     def get_full_chain(self):
@@ -28,8 +30,4 @@ class chain:
     
     @property
     def last_block_index(self) -> int:
-        if self.last_block != "genesis block":
-            return self.last_block.get("metadata").get('index')
-        
-        else:
-            return 0
+        return len(self.__chain)

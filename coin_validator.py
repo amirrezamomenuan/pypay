@@ -142,6 +142,7 @@ def validate_coin(coins:list, sender_pub_key:str, validating_block_transactions:
         check_mempool_transaction_coins(coins, sender_pub_key)
 
     last_block_index = LAST_BLOCK_INDEX
+    print(f'\n\n\n\tLASTBLOCK INDEX IS :{last_block_index}\n\n\n')
 
     if last_block_index <= 0:
         return
