@@ -37,12 +37,14 @@ def check_incoins(transaction: dict, coins_list: list, block_id: int = 0, checks
 
     for coin in coins_list:
         if coin in incoins:
+            print("\n\n \t COIN IS ALREADY CONSUMED!! \n\n")
             if checks_ledger:
                 error_message = f"coin is already consumed in transaction located in ledger"
                 raise Exceptions.DoubleSpendError(error_message)
             else:
-                transaction_id = transaction.get("metadata").get("id")
-                error_message = f"coin is already consumed in transaction with id : {transaction_id} on block : {block_id}"
+                error_message = f"coin is already consumed in transaction  on block : {block_id}"
+                print("\n\n\n")
+                print('\t',error_message,'\n\n\n')
                 raise Exceptions.DoubleSpendError(error_message)
 
 
@@ -135,6 +137,7 @@ def validate_coin(coins:list, sender_pub_key:str, validating_block_transactions:
     to solve double spending problem the only requirement is to check imcoins list
     so in this function we are ignoring outcoins
     """
+    print("\n\n\n \tVALIDATING COINS IN validate_coin\n\n\n")
     if not validating_block_transactions:
         check_mempool_transaction_coins(coins, sender_pub_key)
 
@@ -148,12 +151,12 @@ def validate_coin(coins:list, sender_pub_key:str, validating_block_transactions:
     while last_block_index > 0:
         block = blocks[last_block_index - 1] #subtract 1 because list index starts from 0 but block indexes start from 1
 
-        print(f"NUMBER OF TRANSACTIONS IN BLOCK WITH INDEX {last_block_index} IS : {block.get('trxs')}")
+        print(f"NUMBER OF TRANSACTIONS IN BLOCK WITH INDEX {last_block_index} IS : {len(block.get('trxs'))}")
         for trx in block.get("trxs"):
             trx_status = trx.get("metadata").get("status")
             print('CHECKING COINS USING BLOCK: ', last_block_index)
             if trx_status == TRX_TYPES.trx:
-                check_incoins(trx, coins, last_block_index)
+                check_incoins(transaction= trx, coins_list=coins, block_id= last_block_index)
                 validated_coins_count += check_outcoins(trx, coins, sender_pub_key)
 
             elif trx_status == TRX_TYPES.selftrx:
