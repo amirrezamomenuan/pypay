@@ -59,7 +59,8 @@ class BlockChain:
     
     @property
     def last_block_index(self):
-        return self.__chain.last_block_index
+        print("\n\n\tHELLO WORLD\n\n")
+        return self.__chain.get_last_block_index()
 
     
     def add_transaction_to_mempool(self, transaction:dict, start_minig:bool = True) -> None:
@@ -75,7 +76,7 @@ class BlockChain:
     
     def add_block_to_chain(self, block):
         self.__chain.append_new_block(block)
-        print(self.__chain.get_full_chain())
+        print(f"LENGTH OF THE CHAIN IS: {len(self.__chain.get_full_chain())}")
     
 
     def remove_transactions_list(self,transactions_list: list) -> None:
@@ -88,6 +89,9 @@ class BlockChain:
 
     def set_full_chain(self, chain:list):
         self.__chain.update_chain(chain = chain)
+    
+    def get_full_chain(self):
+        return self.__chain.get_full_chain()
 
 
 def load_initial_boot_data(deamon_node:BlockChain):

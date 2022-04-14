@@ -9,8 +9,8 @@ class TRX_TYPES:
     selftrx = 'selftrx'
     trxfee = 'trxfee'
 
-blocks = pypayd.chain.get_full_chain()
-LAST_BLOCK_INDEX = pypayd.deamon_node.last_block_index
+blocks = 'something that changed because of importing and runnign issues'
+LAST_BLOCK_INDEX = "something that changed"
 
 
 def check_coins_count(validated_coins_count:int , coins_count:int , pubkey:str) -> None:
@@ -141,14 +141,14 @@ def validate_coin(coins:list, sender_pub_key:str, validating_block_transactions:
     if not validating_block_transactions:
         check_mempool_transaction_coins(coins, sender_pub_key)
 
-    last_block_index = LAST_BLOCK_INDEX
+    last_block_index = pypayd.deamon_node.last_block_index
     print(f'\n\n\n\tLASTBLOCK INDEX IS :{last_block_index}\n\n\n')
 
     if last_block_index <= 0:
         return
 
     validated_coins_count = 0
-
+    blocks = pypayd.deamon_node.get_full_chain()
     while last_block_index > 0:
         block = blocks[last_block_index - 1] #subtract 1 because list index starts from 0 but block indexes start from 1
 
@@ -164,7 +164,7 @@ def validate_coin(coins:list, sender_pub_key:str, validating_block_transactions:
                 validated_coins_count += check_selftrx_outcoins(trx, coins, sender_pub_key)
 
             elif trx_status == TRX_TYPES.trxfee:
-                check_trxfee_incoins()
+                check_trxfee_incoins(transaction=trx, coins_list=coins)
                 validated_coins_count += check_trxfee_outcoins(trx, coins, sender_pub_key)
 
         last_block_index -= 1

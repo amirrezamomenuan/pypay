@@ -28,6 +28,5 @@ class chain:
         else:
             return "genesis block"
     
-    @property
-    def last_block_index(self) -> int:
+    def get_last_block_index(self) -> int:
         return len(self.__chain)
