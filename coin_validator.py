@@ -76,7 +76,7 @@ def check_outcoins(transaction: dict, coins_list: list, pubkey):
     trx_coin = transaction.get("outcoins").get("recipient").get("coin")
 
     sender_pubkey = transaction.get("outcoins").get("sender").get("pubkey")
-    reverse_trx_coin = transaction.get("outcoins").get("recipient").get("coin")
+    reverse_trx_coin = transaction.get("outcoins").get("sender").get("coin")
 
     for coin in coins_list:
         if recipient_pubkey == pubkey and coin == trx_coin:
@@ -86,6 +86,7 @@ def check_outcoins(transaction: dict, coins_list: list, pubkey):
         if sender_pubkey == pubkey and reverse_trx_coin == coin:
             validated_coins_count += 1
             continue
+
     
     return validated_coins_count
 
@@ -168,4 +169,5 @@ def validate_coin(coins:list, sender_pub_key:str, validating_block_transactions:
                 validated_coins_count += check_trxfee_outcoins(trx, coins, sender_pub_key)
 
         last_block_index -= 1
+    print("\n\n\tNUMBER OF VALIDATED COINS IS:",validated_coins_count, "\n\n")
     check_coins_count(validated_coins_count=validated_coins_count, coins_count= len(coins), pubkey=sender_pub_key)
