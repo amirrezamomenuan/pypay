@@ -5,7 +5,7 @@ import block_validator,block_generator
 import Exceptions
 import pypayd
 import wallet_cli
-import transaction_core
+import update_coins
 
 def generate_selftrx_transaction():
     self_trx_mining_reward = wallet_cli.wallet().create_self_trx()
@@ -65,11 +65,23 @@ def add_block_to_chain(block):
     pypayd.deamon_node.add_block_to_chain(block)
 
 
+def update_coins_with_block(block:dict):
+    pubkey = wallet_cli.wallet().get_pubky_as_string()
+
+    update_thread_kwargs = {
+        'transactions_list' : block.get('trxs'),
+        'pubkey': pubkey
+    }
+    pubkey_updated_thread = threading.Thread(target = update_coins.update, kwargs=update_thread_kwargs)
+    pubkey_updated_thread.start()
+
+
 def handle_new_block(block:dict, last_block:dict = {}) -> tuple:
     try:
         block_validator.validate_block(block = block, last_block = last_block)
         add_block_to_chain(block= block)
         pypayd.deamon_node.remove_transactions_list(transactions_list= block.get('trxs'))
+        update_coins_with_block(block = block)
         print("block validated and added to chain successfully")
         return "block validated and added to chain successfully", 200
     except Exceptions.CoinException:

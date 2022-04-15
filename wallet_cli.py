@@ -178,6 +178,10 @@ class wallet:
                 trx_type= 'trxfee',
                 incoins= trxfee_coins
             )
+    
+
+    def get_pubky_as_string(self) -> str:
+        return f"{self.__e},{self.__n}"
 
     
 def unsign_transaction_signature(signature:str, pubkey_as_keypair: str) -> str:
