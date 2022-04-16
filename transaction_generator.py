@@ -82,7 +82,7 @@ class TRANSACTION:
         """
         returns a hashed signable data that does not require to be hashed any more
         """
-        self.__cast_outcoins() ##############################################################################################################
+        self.__cast_outcoins()
         signable_data = OrderedDict()
         signable_data['incoins'] = self.incoins
         signable_data['outcoins'] = self.outcoins

@@ -19,17 +19,13 @@ MIN_TRX_AMOUNT = 0.1
 
 
 def get_hashed_signable_data(transaction:dict) -> int:
-    # print("this function is performiong...")
     signable_data = OrderedDict()
     signable_data['incoins'] = transaction.get('incoins')
     signable_data['outcoins'] = transaction.get('outcoins')
     signable_data['sender_pubkey'] = transaction.get('sender_pubkey')
 
     jsonified_signable_data = json.dumps(signable_data, indent=4, sort_keys=True)
-    # print("\tfunction: get_hashed_signable_data\n", )
-    # print("\tjsonified_signable_data = \n",jsonified_signable_data)
     hexified_data = sha256(jsonified_signable_data.encode()).hexdigest()
-    # print("hexified data is : ", hexified_data, "\n\n")
     return int(hexified_data, 16)
 
 
@@ -55,8 +51,7 @@ def trx_metadata_validator(metadata:dict) -> None:
 def trxfee_amount_validator(trxfee_coin: str) -> None:
     """
         this function checks to see if the trxfee is less than minimum trxfee amount or 
-        if peer didnot put any trxfee on it
-
+        if peer didnot put any trxfee on it.
         if transaction fee is greater than 0 and lower than minimum trxfee amount this function wont raise any errors
     """
     if trxfee_coin is not None:
@@ -100,17 +95,12 @@ def trx_structure_validator(transaction:dict) -> None:
         raise ValueError("incoins is not in a valid form")
 
     elif type(trx_outcoins) not in (dict, OrderedDict):
-        # print(trx_outcoins)
         raise ValueError("outcoins is not in a valid form")
 
     elif type(trx_signature) is not int:
-        # it might be a byte string 
-        #in that case it will cause some serious problems
         raise ValueError("signature is not in a valid form")
     
     elif type(trx_pubkey) != str:
-        # print(trx_pubkey)
-        # print(type(trx_pubkey))
         raise ValueError("sender public key is in an invalid form")
 
 
@@ -140,27 +130,21 @@ def validate_input_trx_coins(transaction:OrderedDict, validating_block_transacti
     """
     incoins_list = transaction.get("incoins")
     sender_pubkey = transaction.get("sender_pubkey")
-    # print(incoins_list)
-    # print(sender_pubkey)
     coin_validator.validate_coin(incoins_list, sender_pubkey, validating_block_transactions)
 
 
 def trxfee_validator(trxfee_amount: float):
-    # passing due to import error in transaction generator
     return trxfee_amount >= 0.001
 
 
 def incoins_validator(incoins):
-    # passing due to import error in transaction generator
     pass
 
 
 def validate_transaction(transaction:OrderedDict, validating_block_transactions:bool = False):
-    # print("\n\ttransaction validation started...\n")
     trx_structure_validator(transaction= transaction)
     trx_metadata_validator(transaction['metadata'])
     trxfee_amount_validator(transaction['outcoins']['trxfee']['coin'])
     transaction_amount_validator(transaction['outcoins']['recipient']['coin'])
     trx_signarue_validator(transaction = transaction)
     validate_input_trx_coins(transaction = transaction, validating_block_transactions = validating_block_transactions)
-    # print("\n\ttransaction validated successfully...")
