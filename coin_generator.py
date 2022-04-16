@@ -15,7 +15,7 @@ class COIN:
         self.is_generated = False
 
     
-    def generate_coin(self, amount:float = 1.0):
+    def generate_coin(self, amount:float = 1.0) -> None:
         if self.is_generated == True:
             raise Exceptions.CoinException("coin is already generated use .get_coin to get coin")
 
@@ -36,6 +36,11 @@ class COIN:
 
     @classmethod
     def create_seed(cls, seed_size: int = 32) -> str:
+        """
+        this method creates a random string using 'ALPHANUMERIC_CHOICES' and avoids using  
+        characters if they are duplicates in 'SIMILAR_CHARACTERS'
+        """
+        
         seed = ""
         for i in range(seed_size):
             choosen_character = choice(ALPHANUMERIC_CHOICES)

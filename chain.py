@@ -10,7 +10,7 @@ class chain:
         print(self.__chain)
     
 
-    def append_new_block(self, block):
+    def append_new_block(self, block) -> None:
         self.__chain.append(block)
 
 
