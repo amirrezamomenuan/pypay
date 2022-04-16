@@ -9,7 +9,6 @@ import mempool
 import block_core
 
 
-
 MIN_TRXS_TO_MINE_BLOCK:int = 2
 INITIAL_NODES_LIST:list = [
     "127.0.0.1:8000",
@@ -59,7 +58,6 @@ class BlockChain:
     
     @property
     def last_block_index(self):
-        print("\n\n\tHELLO WORLD\n\n")
         return self.__chain.get_last_block_index()
 
     
@@ -76,7 +74,6 @@ class BlockChain:
     
     def add_block_to_chain(self, block):
         self.__chain.append_new_block(block)
-        print(f"LENGTH OF THE CHAIN IS: {len(self.__chain.get_full_chain())}")
     
 
     def remove_transactions_list(self,transactions_list: list) -> None:
@@ -113,7 +110,6 @@ deamon_node = BlockChain(
     mempool= mempool.mempool(initial_transactions=[]),
     relative_nodes= INITIAL_NODES_LIST
     )
-
 
 if __name__ == "__main__":
     """
