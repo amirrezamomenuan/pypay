@@ -1,5 +1,5 @@
 import json
-import sys, os
+import os
 
 from Crypto.PublicKey import RSA
 from hashlib import sha512
@@ -43,6 +43,9 @@ class wallet:
     
 
     def __dump_parameters_to_file(self, keypair, file_path: str, file_name: str):
+        """
+        dumps data to keypair.json
+        """
         dict_data = {"n":keypair.n, "d":keypair.d, "e":keypair.e}
         path_to_json_file = file_path + '/' + file_name
         
@@ -51,6 +54,9 @@ class wallet:
     
 
     def __load_parameters_from_file(self, file_path: str, file_name: str):
+        """
+        loads data from keypair.json
+        """
         path_to_json_file = file_path + '/' + file_name
         
         with open(path_to_json_file , "r") as reader:
@@ -85,8 +91,7 @@ class wallet:
         return signature
     
     
-    def __load_coins_from_jsonfile(self, file_path:str, file_name:str) -> dict: #may need to take it out of class
-        # change to read a txt or csv file instead
+    def __load_coins_from_jsonfile(self, file_path:str, file_name:str) -> dict:
         path_to_json_file = file_path + '/' + file_name
         
         with open(path_to_json_file , "r") as reader:
@@ -94,7 +99,7 @@ class wallet:
         return coins_dict
 
 
-    def __choose_best_coinset(self, amount:float, trxfee:float = 0) -> list: #may need to take it out of class
+    def __choose_best_coinset(self, amount:float, trxfee:float = 0) -> list:
         total_amount = amount + trxfee
         coins_dict = self.__load_coins_from_jsonfile(KEYPAIR_FILE_PATH, COINS_FILE_NAME)
         choosen_coins = []
@@ -119,7 +124,7 @@ class wallet:
         return choosen_coins                   
 
 
-    def create_transaction(self, recipient_pubkey:str, amount:float, trxfee_amount:float, trx_type:str = 'trx', incoins:list = []): #may need to take it out of class
+    def create_transaction(self, recipient_pubkey:str, amount:float, trxfee_amount:float, trx_type:str = 'trx', incoins:list = []):
         if len(incoins) > 0 or trx_type == 'selftrx':
             incoins = incoins
         else:
