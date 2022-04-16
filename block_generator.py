@@ -48,8 +48,7 @@ class BLOCK:
                 trx_number += 1
             if trx_number >= TRX_LIST_LIMIT:
                 break
-        
-        # add another function here that adds selftrx and trxfee trx to transactions_list
+
 
     def __stirngify_hashable_data(self) -> str:
         stringified_data = json.dumps(self.hashable_data, sort_keys= True)
@@ -69,6 +68,11 @@ class BLOCK:
     
 
     def __update_hashable_block(self):
+        """
+        this function is only called when an attempt for mining a block was not successfull
+        so it is called to prepare "block's minable data" for next attempt
+        """
+
         self.__increment_nonce()
         self.__update_ts()
 
@@ -85,17 +89,21 @@ class BLOCK:
         return hashed_string[:4] == '0000'
 
 
-    def __add_mining_reward(self):
-        # check the trxfee protocol later
-        self_trx = block_core.generate_selftrx_transaction()
-        trxfee = block_core.generate_trxfee_transaction()
+    # def __add_mining_reward(self):
+    #     # check the trxfee protocol later
+    #     self_trx = block_core.generate_selftrx_transaction()
+    #     trxfee = block_core.generate_trxfee_transaction()
 
-        self.__add_trx_to_trxs(self_trx)
-        if trxfee is not None:
-            self.__add_trx_to_trxs(trxfee)
+    #     self.__add_trx_to_trxs(self_trx)
+    #     if trxfee is not None:
+    #         self.__add_trx_to_trxs(trxfee)
     
 
     def __check_self_trx_existance(self):
+        """
+        this function checks whether the newly recieved block contains selftrx or not
+        """
+
         if len(self.trxs) == 0:
             raise Exception("can not check an empty list")
 
@@ -109,6 +117,10 @@ class BLOCK:
     
 
     def __check_trxfee_trx_existance(self):
+        """
+        this function checks whether the newly recieved block contains "trxfee transaction" or not
+        """
+
         if self.can_have_trxfee_trx:
             for trx in self.trxs:
                 try:
@@ -139,6 +151,13 @@ class BLOCK:
 
 
     def _shuffle_trxs(self):
+        """
+        this function will almost never be called
+        
+        assuming that there are not going to be trillions of transactions ready in mempool 
+        to be mined, this function shuffles the transactions ONLY if nonce reaches it's max limit
+        so there will be more chance for mining a new block
+        """
         shuffle(self.trxs)
 
 
