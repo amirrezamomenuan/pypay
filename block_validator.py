@@ -25,7 +25,6 @@ def check_nonce(block:OrderedDict):
     elif type(block.get('metadata').get("nonce")) != int:
         bad_type = type(block.get('metadata').get("nonce"))
         error_message = f"invalid nonce sent, type : {bad_type} is not acceptable"
-        print(error_message)
         raise Exceptions.InvalidBlock(error_message)
 
 
@@ -67,25 +66,42 @@ def validate_timestamp(block:OrderedDict, last_block_ts:float = 0):
     
 
 def validate_block_nounce(block: OrderedDict, compared_to_string:str = '0000'):
+    """
+        this function checks every newly recieved block and 
+        checks if the block hash is lower or equal to the "network difficulty"
+        
+        checks Proof Of Work
+    """
+
     stringified_data = json.dumps(block, sort_keys=True)
     hashed_data = sha256(stringified_data.encode()).hexdigest()
-    # print("stringified data is: ",stringified_data, '\n\n\n')
-    print("hashed data is: ", hashed_data, '\n\n\n')
 
-    # print(hashed_data)
     if hashed_data[:4] != compared_to_string:
         # TODO: add to ban score
         raise Exceptions.InvalidBlock("invalid nonce")
 
 
 def validate_last_block_hash(block: OrderedDict, last_block_hash:str):
+    """
+    this fucntion compares newly recieved blocks hash
+    with the last block of blockchain
+
+    this function prevents skipping blocks and also does not allow any one to change
+    any value in previous blocks
+    """
+
     if last_block_hash != block['metadata']['lastblock_hash']:
-        print("last block hash is :" ,last_block_hash)
-        print("newblocks lastblock_hash is :", block['metadata']['lastblock_hash'])
-        raise Exceptions.InvalidBlock("invalid last block hash")
+        raise Exceptions.InvalidBlock("invalid last block hash, probabley other block has been registered with current index")
 
 
 def validate_index(block:OrderedDict, last_block_index: int = -1):
+    """
+    this fucntion compares newly recieved blocks index
+    with the last block of blockchain
+
+    this function prevents skipping blocks
+    """
+
     block_index = block['metadata']['index']
     if block_index < last_block_index:
         block_index_deffenrence = last_block_index - block_index - 1
@@ -97,18 +113,20 @@ def validate_index(block:OrderedDict, last_block_index: int = -1):
 def validate_block_metadata(block:OrderedDict, last_block_ts:float, last_block_index:int, last_block_hash:str):
     validate_timestamp(block, last_block_ts= last_block_ts)
 
-    validate_block_nounce(block) # may cause a problem checkout later on
+    validate_block_nounce(block)
     
     validate_last_block_hash(block, last_block_hash)
     validate_index(block, last_block_index)
 
 
 def validate_block_trxs(transactions : list):
-    print("\t here we are trying to validate transactions")
-    print(len(transactions))
+    """
+    this function is responsible for validating every trx in block
+    will raise an error if any of transactions are not validated
+
+    later should add to banscore
+    """
     for trx in transactions:
-        # print(type(trx))
-        # print(trx)
         trx_validation_result = transaction_core.validate_transaction(transaction=trx, is_validating_block= True)
         if trx_validation_result[1] == 400:
             raise Exceptions.InvalidTransaction(f"{trx_validation_result[0]}")
@@ -116,26 +134,20 @@ def validate_block_trxs(transactions : list):
 
 def validate_block(block:dict, last_block:dict):
     if last_block != {}:
-        print("\n\t validating normal block\n")
         last_block_hash = sha256(json.dumps(last_block, sort_keys= True).encode()).hexdigest()
         last_block_index = last_block['metadata']['index']
         last_block_ts = last_block['metadata']['ts']
     
     else:
-        print("\n\t validating genesis block\n")
         last_block_hash = '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a'
         last_block_index = 0
         last_block_ts = 0.0
 
     validate_block_structure(block = block)
-    print("\n\tblock structure validated\n")
     validate_block_metadata(
         block = block,
         last_block_hash= last_block_hash,
         last_block_index=last_block_index,
         last_block_ts=last_block_ts
         )
-    print("\n\tblock metadata_validated\n")
     validate_block_trxs(transactions = block['trxs'])
-    print("\n\tblock trxs validated\n")
-      
