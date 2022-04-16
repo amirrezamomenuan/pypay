@@ -7,12 +7,12 @@ import pypayd
 import wallet_cli
 import update_coins
 
-def generate_selftrx_transaction():
+def generate_selftrx_transaction() -> None:
     self_trx_mining_reward = wallet_cli.wallet().create_self_trx()
     pypayd.deamon_node.add_transaction_to_mempool(self_trx_mining_reward, start_minig=False)
 
 
-def generate_trxfee_transaction():
+def generate_trxfee_transaction() -> None:
     trxfee_mining_trx = wallet_cli.wallet().create_trxfee_trx(pypayd.deamon_node.mempool)
     if trxfee_mining_trx is not None:
         pypayd.deamon_node.add_transaction_to_mempool(trxfee_mining_trx, start_minig=False)
@@ -41,7 +41,12 @@ def create_block_minable_data() -> dict:
     return data
 
 
-def mine_block():
+def mine_block() -> None:
+    """
+    this function starts a thread for mining a new block
+    ISSUE : is that it does not break when another block is recieved and validated from network
+    """
+
     generate_trxfee_transaction()
     generate_selftrx_transaction()
     minable_block_data = create_block_minable_data()
@@ -49,14 +54,11 @@ def mine_block():
     mine_thread.start()
 
 
-def send_newly_mined_block_to_all_neighbour_nodes(block:dict):
-    print("HERE TRYING TO SEND BLOCK TO RELATIVE NODES")
+def send_newly_mined_block_to_all_neighbour_nodes(block:dict) -> None:
     for node in pypayd.deamon_node.relative_nodes:
         url ='http://' + node + "/new-block"
         try:
-            print("URL is : ", url)
-            block_sending_response = requests.post(url=url, json= block)
-            print(block_sending_response.json)
+            requests.post(url=url, json= block)
         except:
             pass
 
@@ -66,6 +68,15 @@ def add_block_to_chain(block):
 
 
 def update_coins_with_block(block:dict):
+    """
+    this function takes a newly mined block and checks if the current node has
+    recieved or spent any of its coins
+    and will remove or add coins from coins.json file
+
+    this has nothing to do with blockchains functionallity, it only keeps track of
+    owners coins, which makes it easier to send a new transaction and know the balance
+    """
+
     pubkey = wallet_cli.wallet().get_pubky_as_string()
 
     update_thread_kwargs = {
@@ -82,20 +93,15 @@ def handle_new_block(block:dict, last_block:dict = {}) -> tuple:
         add_block_to_chain(block= block)
         pypayd.deamon_node.remove_transactions_list(transactions_list= block.get('trxs'))
         update_coins_with_block(block = block)
-        print("block validated and added to chain successfully")
+
         return "block validated and added to chain successfully", 200
     except Exceptions.CoinException:
-        print("this block contains invalid coins!", 400)
         return "this block contains invalid coins!", 400
     except Exceptions.DoubleSpendError:
-        print("this block cointains a coin that is already consumed")
         return "this block cointains a coin that is already consumed", 400
     except Exceptions.InvalidBlock as be:
-        print(f" invalid block: {be}")
         return f" invalid block: {be}", 400
     except Exceptions.InvalidTransaction as te:
-        print(f"invalid transaction(s) : {te}")
         return f"invalid transaction(s) : {te}", 400
     except:
-        print(f"this block failed to validate due to an unexpected error")
         return f"this block failed to validate due to an unexpected error", 400
